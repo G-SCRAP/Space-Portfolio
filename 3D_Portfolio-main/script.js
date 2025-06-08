@@ -16,7 +16,7 @@ document.getElementById('scene-container').appendChild(renderer.domElement);
 
 
 
-// RocketShip Model
+// RocketShip Model - Kinda Looks like trash not gonna lie
 // Create a cone geometry for the rocket body
 const bodyGeometry = new THREE.ConeGeometry(0.5, 1, 32);
 const bodyMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
@@ -33,7 +33,6 @@ engineMesh.position.set(0, -0.75, 0);
 scene.add(engineMesh);
 
 // Custom Polygon Shape for Wings of Rocketship
-
 var wingOnePoints = [];
 wingOnePoints.push(new THREE.Vector2(0, 1));
 wingOnePoints.push(new THREE.Vector2(-1, 0));
@@ -200,12 +199,11 @@ WelcomePT4fontLoader.load('https://cdn.jsdelivr.net/npm/three/examples/fonts/hel
     scene.add(WelcomePT4fontMesh);
 });
 
-
-    
-
 //End of Texts Meshes
+
+
 // Star Particles
-// Particle Materials 
+// Particle Materials - For Two Diffrent Colors of Stars 
 var particleOneMaterial = new THREE.PointsMaterial({
     color: 0xffffff,
     size: 0.1 // Adjust size as needed
@@ -216,6 +214,7 @@ var particleTwoMaterial = new THREE.PointsMaterial({
     size: 0.5 // Adjust size as needed
 });
 
+// Particle Count - Change this to adjust the fixed amount of stars in the scene
 var totalParticleCount = 5000; // Number of particles (stars)
 
 particleOneAmount = totalParticleCount / 1.5
@@ -256,8 +255,8 @@ scene.add(particleTwoSystem);
 
 
 // Animation loop
-let font4run = false
-let font4runStop = 0 
+let font4run = false 
+let font4runStop = 0 // 
 function animate() {
     requestAnimationFrame(animate);
     if (camera.position.z == 25){
@@ -274,9 +273,7 @@ function animate() {
             }
             else{
                 WelcomePT4fontMesh.position.z -= 5
-
-                
-            
+a
             }
 
         }
@@ -287,10 +284,6 @@ function animate() {
             WelcomePT4fontMesh.position.y = 10;
             font4run = true
         }
-       
-
-
-
     }
     else{
         if (100 > camera.position.z){
@@ -304,8 +297,6 @@ function animate() {
     // Render the scene
     renderer.render(scene, camera);
 };
-
-
 
 // Start the animation loop
 animate();
