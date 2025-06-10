@@ -9,87 +9,99 @@ const scene = new THREE.Scene();
 
 // Creates the Camera 
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-camera.position.z =3000;
+camera.position.z = 0;
 camera.position.y = 0;
+camera.position.z = 0;
 
 // The webGL renderer
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.getElementById('scene-container').appendChild(renderer.domElement);
 
-function createRocketShip() {
-    // RocketShip Model - Kinda Looks like trash not gonna lie
-// Create a cone geometry for the rocket body
-const bodyGeometry = new THREE.ConeGeometry(0.5, 1, 32);
-const bodyMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
-const bodyMesh = new THREE.Mesh(bodyGeometry, bodyMaterial);
-bodyMesh.position.set(0, -0.75, 0);
-bodyMesh.position.y = 1.25;
-scene.add(bodyMesh);
+// function createRocketShip() {
 
-// Create a cylinder geometry for the engine
-const engineGeometry = new THREE.CylinderGeometry(0.5, 0.5, 3, 32);
-const engineMaterial = new THREE.MeshBasicMaterial({ color: 0x0000ff });
-const engineMesh = new THREE.Mesh(engineGeometry, engineMaterial);
-engineMesh.position.set(0, -0.75, 0);
-scene.add(engineMesh);
+//     // RocketShip Model - Kinda Looks like trash not gonna lie
+// // Create a cone geometry for the rocket body
+// const bodyGeometry = new THREE.ConeGeometry(0.5, 1, 32);
+// const bodyMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+// const bodyMesh = new THREE.Mesh(bodyGeometry, bodyMaterial);
+// bodyMesh.position.set(0, -0.75, 0);
+// bodyMesh.position.y = 1.25;
+// scene.add(bodyMesh);
 
-// Custom Polygon Shape for Wings of Rocketship
-var wingOnePoints = [];
-wingOnePoints.push(new THREE.Vector2(0, 1));
-wingOnePoints.push(new THREE.Vector2(-1, 0));
-wingOnePoints.push(new THREE.Vector2(0, 0));
+// // Create a cylinder geometry for the engine
+// const engineGeometry = new THREE.CylinderGeometry(0.5, 0.5, 3, 32);
+// const engineMaterial = new THREE.MeshBasicMaterial({ color: 0x0000ff });
+// const engineMesh = new THREE.Mesh(engineGeometry, engineMaterial);
+// engineMesh.position.set(0, -0.75, 0);
+// scene.add(engineMesh);
 
-// Create a shape from the points
-var wingOneShape = new THREE.Shape(wingOnePoints);
-// Create geometry from the shape
-var wingOneGeometry = new THREE.ShapeGeometry(wingOneShape);
-// Create material
-var wingOneMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
-// Create mesh
-var wingOnePolygon = new THREE.Mesh(wingOneGeometry, wingOneMaterial);
+// // Custom Polygon Shape for Wings of Rocketship
+// var wingOnePoints = [];
+// wingOnePoints.push(new THREE.Vector2(0, 1));
+// wingOnePoints.push(new THREE.Vector2(-1, 0));
+// wingOnePoints.push(new THREE.Vector2(0, 0));
 
-wingOnePolygon.position.x = -0.3
-wingOnePolygon.position.y = -2.4
-wingOnePolygon.position.z = 0
+// // Create a shape from the points
+// var wingOneShape = new THREE.Shape(wingOnePoints);
+// // Create geometry from the shape
+// var wingOneGeometry = new THREE.ShapeGeometry(wingOneShape);
+// // Create material
+// var wingOneMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
+// // Create mesh
+// var wingOnePolygon = new THREE.Mesh(wingOneGeometry, wingOneMaterial);
 
-// Add Polygon to scene
-scene.add(wingOnePolygon)
+// wingOnePolygon.position.x = -0.3
+// wingOnePolygon.position.y = -2.4
+// wingOnePolygon.position.z = 0
+
+// // Add Polygon to scene
+// scene.add(wingOnePolygon)
 
 
-var wingTwoPoints = [];
-wingTwoPoints.push(new THREE.Vector2(0, 1));
-wingTwoPoints.push(new THREE.Vector2(1, 0));
-wingTwoPoints.push(new THREE.Vector2(0, 0));
+// var wingTwoPoints = [];
+// wingTwoPoints.push(new THREE.Vector2(0, 1));
+// wingTwoPoints.push(new THREE.Vector2(1, 0));
+// wingTwoPoints.push(new THREE.Vector2(0, 0));
 
-// Create a shape from the points
-var wingTwoShape = new THREE.Shape(wingTwoPoints);
-// Create geometry from the shape
-var wingTwoGeometry = new THREE.ShapeGeometry(wingTwoShape);
-// Create material
-var wingTwoMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
-// Create mesh
-var wingTwoPolygon = new THREE.Mesh(wingTwoGeometry, wingTwoMaterial);
+// // Create a shape from the points
+// var wingTwoShape = new THREE.Shape(wingTwoPoints);
+// // Create geometry from the shape
+// var wingTwoGeometry = new THREE.ShapeGeometry(wingTwoShape);
+// // Create material
+// var wingTwoMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
+// // Create mesh
+// var wingTwoPolygon = new THREE.Mesh(wingTwoGeometry, wingTwoMaterial);
 
-// Add Polygon to scene
-wingTwoPolygon.position.x = 0.3
-wingTwoPolygon.position.y = -2.4
-wingTwoPolygon.position.z = 0.0
+// // Add Polygon to scene
+// wingTwoPolygon.position.x = 0.3
+// wingTwoPolygon.position.y = -2.4
+// wingTwoPolygon.position.z = 0.0
 
-scene.add(wingTwoPolygon)
+// scene.add(wingTwoPolygon)
 
-}
+// }
 // Camera Controls
-function cameraSpeed(moveX, moveY, moveZ, cameraSpeed) {
+
+// Function controls camera postion staticly - Paremters needed are Interger values
+function staticCameraControls(moveX, moveY, moveZ){
+    camera.position.x = moveX;
+    camera.position.y = moveY;
+    camera.position.z = moveZ;  
+}
+// Function controls camera position dynamically - Parameters needed are boolean values and a speed interger value
+function dynamicCameraControls(moveX, moveY, moveZ, cameraSpeed) {
     if (moveX == true) {
-        camera.position.x += 0.5;
+        camera.position.x += cameraSpeed;
+        console.log("Camera X Position: " + camera.position.x);
     }
     if (moveY == true) {
-        camera.position.y += 0.5;
+        camera.position.y += cameraSpeed;
     }
     if (moveZ == true) {
-        camera.position.z += 0.5; 
+        camera.position.z += cameraSpeed; 
     }
+    
 }
 
 function TextLocation(moveX, moveY, moveZ, textMesh) {
@@ -127,9 +139,9 @@ const boldText = new THREE.FontLoader();
     const boldTextMesh = new THREE.Mesh(textGeometry, boldTextMaterial);
 
     // Position Text
-    boldTextMesh.position.z = 2500;
-    boldTextMesh.position.x = -60;
-    boldTextMesh.position.y = -5;
+    boldTextMesh.position.z = -150;
+    boldTextMesh.position.x = -38.5;
+    boldTextMesh.position.y = 0;
 
     // Add Text to Scene
     scene.add(boldTextMesh);
@@ -184,12 +196,21 @@ particleTwoGeometry.setAttribute('position', new THREE.BufferAttribute(positions
 var particleTwoSystem = new THREE.Points(particleTwoGeometry, particleTwoMaterial);
 scene.add(particleTwoSystem);
 
+const cameraEventDirectionX = [false, false, true]
+const cameraEventDirectionY = [false, true, false]
+const cameraEventDirectionZ = [true, false, false] 
+const cameraEventSpeed = [-5, 10, 15];
+var cameraSequenceCounter = 0 
 
 function animate() {
     requestAnimationFrame(animate);
     // Render the scene
     renderer.render(scene, camera);
-    camera.position.z = camera.position.z - 0.5;
+    // Update camera controls 
+    dynamicCameraControls(cameraEventDirectionX[cameraSequenceCounter], cameraEventDirectionY[cameraSequenceCounter], 
+        cameraEventDirectionZ[cameraSequenceCounter], cameraSequenceCounter[cameraSequenceCounter]);
+    cameraSequenceCounter += 1; 
+
 };
 
 // Start the animation loop
