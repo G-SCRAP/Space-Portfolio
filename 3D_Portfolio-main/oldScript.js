@@ -1,24 +1,22 @@
-// Author: Gavin Ogren
-// Date: 2025 - 6 - 9 
-// Description: A 3D portfolio website showcase who I am and my skills using Three.js
-
-console.log("3D Portfolio Website Loaded Successfully!");
+// Gavin Ogren
+// 5/1/2024
 
 //Initialize Three.js scene
 const scene = new THREE.Scene();
 
-// Creates the Camera 
+// Perspective Camera
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 camera.position.z =3000;
 camera.position.y = 0;
 
-// The webGL renderer
+// Create a webGL renderer
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.getElementById('scene-container').appendChild(renderer.domElement);
 
-function createRocketShip() {
-    // RocketShip Model - Kinda Looks like trash not gonna lie
+
+
+// RocketShip Model - Kinda Looks like trash not gonna lie
 // Create a cone geometry for the rocket body
 const bodyGeometry = new THREE.ConeGeometry(0.5, 1, 32);
 const bodyMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
@@ -78,37 +76,26 @@ wingTwoPolygon.position.z = 0.0
 
 scene.add(wingTwoPolygon)
 
-}
-// Camera Controls
-function cameraSpeed(moveX, moveY, moveZ, cameraSpeed) {
+// // TextGeometry
+function moveTextGeometry(moveX, moveY, moveZ, camera) {
     if (moveX == true) {
-        camera.position.x += 0.5;
+        WelcomefontLoader.position.x += 0.5;
     }
     if (moveY == true) {
-        camera.position.y += 0.5;
+        WelcomefontLoader.position.y += 0.5;
     }
     if (moveZ == true) {
-        camera.position.z += 0.5; 
+        We
+
+
     }
 }
 
-function TextLocation(moveX, moveY, moveZ, textMesh) {
-    if (moveX == true) {
-        textMesh.position.x += 0.5;
-    }
-    if (moveY == true) {
-        textMesh.position.y += 0.5;
-    }
-    if (moveZ == true) {
-        textMesh.position.z += 0.5; 
-    }
-}
-
-
-const boldText = new THREE.FontLoader();
+// Font Loader
+const WelcomefontLoader = new THREE.FontLoader();
 
 // Load the default font
-    boldText.load('https://cdn.jsdelivr.net/npm/three/examples/fonts/helvetiker_regular.typeface.json', function (font) {
+WelcomefontLoader.load('https://cdn.jsdelivr.net/npm/three/examples/fonts/helvetiker_regular.typeface.json', function (font) {
     const textGeometry = new THREE.TextGeometry('Welcome!', {
         font: font,
         size: 12,
@@ -121,19 +108,113 @@ const boldText = new THREE.FontLoader();
     });
 
     // Text Material
-    const boldTextMaterial = new THREE.MeshBasicMaterial({ color: 0xffff11 });
+    const welcomeTextMaterial = new THREE.MeshBasicMaterial({ color: 0xffff11 });
 
-    // Create Mesh - Need boldTextMaterial 
-    const boldTextMesh = new THREE.Mesh(textGeometry, boldTextMaterial);
+    // Create Mesh
+    const welcomeTextMesh = new THREE.Mesh(textGeometry, welcomeTextMaterial);
 
     // Position Text
-    boldTextMesh.position.z = 2500;
-    boldTextMesh.position.x = -60;
-    boldTextMesh.position.y = -5;
+    welcomeTextMesh.position.z = 2500;
+    welcomeTextMesh.position.x = -60;
+    welcomeTextMesh.position.y = -5;
 
     // Add Text to Scene
-    scene.add(boldTextMesh);
+    scene.add(welcomeTextMesh);
 });
+
+const WelcomePT2fontLoader = new THREE.FontLoader();
+
+// Load the default font
+WelcomePT2fontLoader.load('https://cdn.jsdelivr.net/npm/three/examples/fonts/helvetiker_regular.typeface.json', function (font) {
+    const textGeometry = new THREE.TextGeometry('Let Me introduce myself', {
+        font: font,
+        size: 15,
+        height: 5,
+        curveSegments: 12,
+        bevelEnabled: true,
+        bevelThickness: 1,
+        bevelSize: 0.5,
+        bevelSegments: 3
+    });
+
+    // Text Material
+    const WelcomePT2Material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+
+    // Create Mesh
+    const WelcomePT2fontMesh = new THREE.Mesh(textGeometry, WelcomePT2Material);
+
+    // Position Text
+    WelcomePT2fontMesh.position.z = 1500;
+
+    // Add Text to Scene
+    scene.add(WelcomePT2fontMesh);
+});
+
+const WelcomePT3fontLoader = new THREE.FontLoader();
+WelcomePT3fontLoader.load('https://cdn.jsdelivr.net/npm/three/examples/fonts/helvetiker_regular.typeface.json', function (font) {
+    const textGeometry = new THREE.TextGeometry('My Name Is Gavin Ogren', {
+        font: font,
+        size: 15,
+        height: 5,
+        curveSegments: 12,
+        bevelEnabled: true,
+        bevelThickness: 1,
+        bevelSize: 0.5,
+        bevelSegments: 3
+    });
+
+    // Text Material
+    const WelcomePT3Material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+
+    // Create Mesh
+    const WelcomePT3fontMesh = new THREE.Mesh(textGeometry, WelcomePT3Material);
+
+    // Position Text
+    WelcomePT3fontMesh.position.z = 750;
+    WelcomePT3fontMesh.position.x = -150;
+    WelcomePT3fontMesh.position.y = -5;
+
+ 
+
+
+    // Add Text to Scene
+    scene.add(WelcomePT3fontMesh)
+});
+
+const WelcomePT4fontLoader = new THREE.FontLoader();
+let WelcomePT4fontMesh;
+WelcomePT4fontLoader.load('https://cdn.jsdelivr.net/npm/three/examples/fonts/helvetiker_regular.typeface.json', function (font) {
+    const textGeometry = new THREE.TextGeometry('And this is my Journey!', {
+        font: font,
+        size: 15,
+        height: 5,
+        curveSegments: 12,
+        bevelEnabled: true,
+        bevelThickness: 1,
+        bevelSize: 0.5,
+        bevelSegments: 3
+    });
+
+    // Text Material
+    const WelcomePT4Material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+
+    // Create Mesh
+    WelcomePT4fontMesh = new THREE.Mesh(textGeometry, WelcomePT4Material);
+
+    // Position Text
+    WelcomePT4fontMesh.position.z = 3000;
+    WelcomePT4fontMesh.position.x = -150;
+    WelcomePT4fontMesh.position.y = -5;
+
+ 
+
+
+    // Add Text to Scene
+    scene.add(WelcomePT4fontMesh);
+});
+
+//End of Texts Meshes
+
 
 // Star Particles
 // Particle Materials - For Two Diffrent Colors of Stars 
@@ -185,11 +266,49 @@ var particleTwoSystem = new THREE.Points(particleTwoGeometry, particleTwoMateria
 scene.add(particleTwoSystem);
 
 
+
+
+// Animation loop
+let font4run = false 
+let font4runStop = 0 // 
 function animate() {
     requestAnimationFrame(animate);
+    // 1. Fails on the first run, goes into the if statment second run 
+    if (camera.position.z == 25){
+        // 2. 
+        if (font4run == true){
+        
+            if (WelcomePT4fontMesh.position.z < 25){
+
+                 font4runStop += 1
+                 if (font4runStop == 500){
+                   
+                    console.log(font4runStop)
+                 }
+            }
+            else{
+                WelcomePT4fontMesh.position.z -= 5
+            }
+        }
+        else{
+             // runs once the else statment is finished
+            WelcomePT4fontMesh.position.z = 50;
+            WelcomePT4fontMesh.position.x = -100;
+            WelcomePT4fontMesh.position.y = 10;
+            font4run = true
+        }
+    }
+    else{
+        if (100 > camera.position.z){
+            camera.position.z = camera.position.z - 0.5; 
+        }
+        else{
+            camera.position.z = camera.position.z - 5; 
+        }
+    }
+    
     // Render the scene
     renderer.render(scene, camera);
-    camera.position.z = camera.position.z - 0.5;
 };
 
 // Start the animation loop
