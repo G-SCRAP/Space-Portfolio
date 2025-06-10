@@ -9,7 +9,7 @@ const scene = new THREE.Scene();
 
 // Creates the Camera 
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-camera.position.z = 0;
+camera.position.z = 50;
 camera.position.y = 0;
 camera.position.z = 0;
 
@@ -90,18 +90,18 @@ function staticCameraControls(moveX, moveY, moveZ){
     camera.position.z = moveZ;  
 }
 // Function controls camera position dynamically - Parameters needed are boolean values and a speed interger value
-function dynamicCameraControls(moveX, moveY, moveZ, cameraSpeed) {
-    if (moveX == true) {
-        camera.position.x += cameraSpeed;
-        console.log("Camera X Position: " + camera.position.x);
+function dynamicCameraControls(moveX, moveY, moveZ, cameraSpeed, cameraMaxDistance) {
+    console.log("Dynamic Camera Controls Activated");
+    if (camera.position.x >= cameraMaxDistance && moveX == true) {
+        camera.position.x += 0.5;
     }
-    if (moveY == true) {
-        camera.position.y += cameraSpeed;
+    if (camera.position.y > cameraMaxDistance && moveY == true) {
+        camera.position.y += cameraSpeed; 
     }
-    if (moveZ == true) {
-        camera.position.z += cameraSpeed; 
+    if (camera.position.z < cameraMaxDistance && moveZ == true) {
+        camera.position.z += cameraSpeed;
+        console.log("Camera Position Z: " + camera.position.z);
     }
-    
 }
 
 function TextLocation(moveX, moveY, moveZ, textMesh) {
@@ -196,20 +196,14 @@ particleTwoGeometry.setAttribute('position', new THREE.BufferAttribute(positions
 var particleTwoSystem = new THREE.Points(particleTwoGeometry, particleTwoMaterial);
 scene.add(particleTwoSystem);
 
-const cameraEventDirectionX = [false, false, true]
-const cameraEventDirectionY = [false, true, false]
-const cameraEventDirectionZ = [true, false, false] 
-const cameraEventSpeed = [-5, 10, 15];
-var cameraSequenceCounter = 0 
+
 
 function animate() {
     requestAnimationFrame(animate);
     // Render the scene
     renderer.render(scene, camera);
     // Update camera controls 
-    dynamicCameraControls(cameraEventDirectionX[cameraSequenceCounter], cameraEventDirectionY[cameraSequenceCounter], 
-        cameraEventDirectionZ[cameraSequenceCounter], cameraSequenceCounter[cameraSequenceCounter]);
-    cameraSequenceCounter += 1; 
+    dynamicCameraControls(false, false, true, 0.5, 200);
 
 };
 
