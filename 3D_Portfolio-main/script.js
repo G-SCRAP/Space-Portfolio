@@ -103,7 +103,7 @@ function dynamicCameraControls(moveX, moveY, moveZ, cameraSpeed, cameraMaxDistan
        return; 
     }
     if (moveZ == true) {
-        while (camera.position.z != cameraMaxDistance) {
+        while (camera.position.z >= cameraMaxDistance) {
             console.log("Camera Z Position: " + camera.position.z);
             camera.position.z += cameraSpeed;
        }
