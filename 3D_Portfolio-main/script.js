@@ -83,24 +83,31 @@ document.getElementById('scene-container').appendChild(renderer.domElement);
 // }
 // Camera Controls
 
-// Function controls camera postion staticly - Paremters needed are Interger values
-function staticCameraControls(moveX, moveY, moveZ){
-    camera.position.x = moveX;
-    camera.position.y = moveY;
-    camera.position.z = moveZ;  
-}
+
 // Function controls camera position dynamically - Parameters needed are boolean values and a speed interger value
 function dynamicCameraControls(moveX, moveY, moveZ, cameraSpeed, cameraMaxDistance) {
     console.log("Dynamic Camera Controls Activated");
-    if (camera.position.x >= cameraMaxDistance && moveX == true) {
-        camera.position.x += 0.5;
+
+    if (moveX == true) {
+       while (camera.position.x >= cameraMaxDistance) {
+            console.log("Camera X Position: " + camera.position.x);
+            camera.position.x += cameraSpeed; 
+        }
+       return; 
     }
-    if (camera.position.y > cameraMaxDistance && moveY == true) {
+    if (camera.position.y >= cameraMaxDistance && moveY == true) {
         camera.position.y += cameraSpeed; 
+        while (camera.position.y >= cameraMaxDistance) {
+            camera.position.y += cameraSpeed;
+        }
+       return; 
     }
-    if (camera.position.z < cameraMaxDistance && moveZ == true) {
-        camera.position.z += cameraSpeed;
-        console.log("Camera Position Z: " + camera.position.z);
+    if (moveZ == true) {
+        while (camera.position.z != cameraMaxDistance) {
+            console.log("Camera Z Position: " + camera.position.z);
+            camera.position.z += cameraSpeed;
+       }
+       return; 
     }
 }
 
@@ -203,7 +210,9 @@ function animate() {
     // Render the scene
     renderer.render(scene, camera);
     // Update camera controls 
-    dynamicCameraControls(false, false, true, 0.5, 200);
+    
+    dynamicCameraControls(false, false, true, -0.5, 50);
+
 
 };
 
