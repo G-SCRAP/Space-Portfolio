@@ -86,28 +86,57 @@ document.getElementById('scene-container').appendChild(renderer.domElement);
 
 // Function controls camera position dynamically - Parameters needed are boolean values and a speed interger value
 function dynamicCameraControls(moveX, moveY, moveZ, cameraSpeed, cameraMaxDistance) {
-    console.log("Dynamic Camera Controls Activated");
+ 
 
-    if (moveX == true) {
-       while (camera.position.x >= cameraMaxDistance) {
-            console.log("Camera X Position: " + camera.position.x);
-            camera.position.x += cameraSpeed; 
+    if (moveX) {
+        if (cameraMaxDistance < 0) {
+              console.log("Camera Max Distance is Positive: " +camera.position.x +":"+ cameraMaxDistance);
+             
+            if (camera.position.x != cameraMaxDistance){
+                 camera.position.x += cameraSpeed;
+            }
+            else{
+                return true; // Return true if camera reaches max distance
+            }
+                
         }
-       return; 
-    }
-    if (camera.position.y >= cameraMaxDistance && moveY == true) {
-        camera.position.y += cameraSpeed; 
-        while (camera.position.y >= cameraMaxDistance) {
-            camera.position.y += cameraSpeed;
+        else{
+            console.log("Camera Max Distance is Positive: " +camera.position.x +":"+ cameraMaxDistance);
+            if (camera.position.x != cameraMaxDistance){
+                camera.position.x += cameraSpeed;
+            }  
         }
-       return; 
     }
-    if (moveZ == true) {
-        while (camera.position.z >= cameraMaxDistance) {
-            console.log("Camera Z Position: " + camera.position.z);
-            camera.position.z += cameraSpeed;
-       }
-       return; 
+    if (moveY) {
+        if (cameraMaxDistance < 0) {
+              console.log("Camera Max Distance is Positive: " +camera.position.y +":"+ cameraMaxDistance);
+             
+            if (camera.position.y != cameraMaxDistance){
+                 camera.position.y += cameraSpeed;
+                }
+        }
+        else{
+            console.log("Camera Max Distance is Positive: " +camera.position.y +":"+ cameraMaxDistance);
+            if (camera.position.y != cameraMaxDistance){
+                camera.position.y += cameraSpeed;
+            }  
+        }
+    }
+
+    if (moveZ) {
+        if (cameraMaxDistance < 0) {
+              console.log("Camera Max Distance is Positive: " +camera.position.z +":"+ cameraMaxDistance);
+             
+            if (camera.position.z != cameraMaxDistance){
+                 camera.position.z += cameraSpeed;
+                }
+        }
+        else{
+            console.log("Camera Max Distance is Positive: " +camera.position.z +":"+ cameraMaxDistance);
+            if (camera.position.z != cameraMaxDistance){
+                camera.position.z += cameraSpeed;
+            }  
+        }
     }
 }
 
@@ -209,9 +238,7 @@ function animate() {
     requestAnimationFrame(animate);
     // Render the scene
     renderer.render(scene, camera);
-    // Update camera controls 
-    
-    dynamicCameraControls(false, false, true, -0.5, 50);
+    // Update camera controls
 
 
 };
