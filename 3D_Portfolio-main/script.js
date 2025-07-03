@@ -9,9 +9,9 @@ const scene = new THREE.Scene();
 
 // Creates the Camera 
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-camera.position.z = 50;
+camera.position.z = 200;
 camera.position.y = 0;
-camera.position.z = 0;
+camera.position.x = 0;
 
 // The webGL renderer
 const renderer = new THREE.WebGLRenderer();
@@ -59,89 +59,44 @@ document.getElementById('scene-container').appendChild(renderer.domElement);
 // scene.add(wingOnePolygon)
 
 
-// var wingTwoPoints = [];
-// wingTwoPoints.push(new THREE.Vector2(0, 1));
-// wingTwoPoints.push(new THREE.Vector2(1, 0));
-// wingTwoPoints.push(new THREE.Vector2(0, 0));
+var wingTwoPoints = [];
+wingTwoPoints.push(new THREE.Vector2(0, 1));
+wingTwoPoints.push(new THREE.Vector2(1, 0));
+wingTwoPoints.push(new THREE.Vector2(0, 0));
 
-// // Create a shape from the points
-// var wingTwoShape = new THREE.Shape(wingTwoPoints);
-// // Create geometry from the shape
-// var wingTwoGeometry = new THREE.ShapeGeometry(wingTwoShape);
-// // Create material
-// var wingTwoMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
-// // Create mesh
-// var wingTwoPolygon = new THREE.Mesh(wingTwoGeometry, wingTwoMaterial);
+// Create a shape from the points
+var wingTwoShape = new THREE.Shape(wingTwoPoints);
+// Create geometry from the shape
+var wingTwoGeometry = new THREE.ShapeGeometry(wingTwoShape);
+// Create material
+var wingTwoMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
+// Create mesh
+var wingTwoPolygon = new THREE.Mesh(wingTwoGeometry, wingTwoMaterial);
 
-// // Add Polygon to scene
-// wingTwoPolygon.position.x = 0.3
-// wingTwoPolygon.position.y = -2.4
-// wingTwoPolygon.position.z = 0.0
+// Add Polygon to scene
+wingTwoPolygon.position.x = 0.3
+wingTwoPolygon.position.y = -2.4
+wingTwoPolygon.position.z = 0.0
 
-// scene.add(wingTwoPolygon)
+scene.add(wingTwoPolygon)
 
 // }
 // Camera Controls
 
 
 // Function controls camera position dynamically - Parameters needed are boolean values and a speed interger value
-function dynamicCameraControls(moveX, moveY, moveZ, cameraSpeed, cameraMaxDistance) {
-    if (moveX) {
-        if (cameraMaxDistance < 0) {
-              console.log("Camera Max Distance is Positive: " +camera.position.x +":"+ cameraMaxDistance);
-             
-            if (camera.position.x != cameraMaxDistance){
-                 camera.position.x += cameraSpeed;
-            }
-            else{
-                 console.log("Camera is at MAX DISTANCE: " +camera.position.x +":"+ cameraMaxDistance);
-                return true; }
-          
-                
-        }
-        else{
-            console.log("Camera Max Distance is Positive: " +camera.position.x +":"+ cameraMaxDistance);
-            if (camera.position.x != cameraMaxDistance){
-                camera.position.x += cameraSpeed;
-            }  
-            else{
-                console.log("Camera is at MAX DISTANCE: " +camera.position.x +":"+ cameraMaxDistance);
-                return true; }
-        }
+function dynamicCameraControls(target, speed = 1) {
+    // Move X
+    if (typeof target.x === "number" && Math.abs(camera.position.x - target.x) > 0.01) {
+        camera.position.x += Math.sign(target.x - camera.position.x) * Math.min(speed, Math.abs(target.x - camera.position.x));
     }
-    if (moveY) {
-        if (cameraMaxDistance < 0) {
-              console.log("Camera Max Distance is Positive: " +camera.position.y +":"+ cameraMaxDistance);
-             
-            if (camera.position.y != cameraMaxDistance){
-                 camera.position.y += cameraSpeed;
-            }
-            else{return true; }
-        }
-        else{
-            console.log("Camera Max Distance is Positive: " +camera.position.y +":"+ cameraMaxDistance);
-            if (camera.position.y != cameraMaxDistance){
-                camera.position.y += cameraSpeed;
-            }
-            else{return true; }  
-        }
+    // Move Y
+    if (typeof target.y === "number" && Math.abs(camera.position.y - target.y) > 0.01) {
+        camera.position.y += Math.sign(target.y - camera.position.y) * Math.min(speed, Math.abs(target.y - camera.position.y));
     }
-    if (moveZ) {
-        if (cameraMaxDistance < 0) {
-              console.log("Camera Max Distance is Positive: " +camera.position.z +":"+ cameraMaxDistance);
-             
-            if (camera.position.z != cameraMaxDistance){
-                 camera.position.z += cameraSpeed;
-            }
-            else{return true; }
-        }
-        else{
-            console.log("Camera Max Distance is Positive: " +camera.position.z +":"+ cameraMaxDistance);
-            if (camera.position.z != cameraMaxDistance){
-                camera.position.z += cameraSpeed;
-            }
-            else{return true; }  
-        }
+    // Move Z
+    if (typeof target.z === "number" && Math.abs(camera.position.z - target.z) > 0.01) {
+        camera.position.z += Math.sign(target.z - camera.position.z) * Math.min(speed, Math.abs(target.z - camera.position.z));
     }
 }
 
@@ -180,7 +135,7 @@ const boldText = new THREE.FontLoader();
     const boldTextMesh = new THREE.Mesh(textGeometry, boldTextMaterial);
 
     // Position Text
-    boldTextMesh.position.z = -150;
+    boldTextMesh.position.z = 0;
     boldTextMesh.position.x = -38.5;
     boldTextMesh.position.y = 0;
 
@@ -236,13 +191,29 @@ var particleTwoSystem = new THREE.Points(particleTwoGeometry, particleTwoMateria
 scene.add(particleTwoSystem);
 
 
-let cameraDestination = [500, 300, 150];
+const cameraTargets = [
+    {x: 0, y: 0, z: 100, speed: 2},
+];
+let currentTargetIndex = 0;
+
+function cameraAtTarget(target, threshold = 0.1) {
+    return (
+        Math.abs(camera.position.x - target.x) < threshold &&
+        Math.abs(camera.position.y - target.y) < threshold &&
+        Math.abs(camera.position.z - target.z) < threshold
+    );
+}
+
 function animate() {
     requestAnimationFrame(animate);
-
-    // Render the scene
+    if (currentTargetIndex < cameraTargets.length) {
+        const target = cameraTargets[currentTargetIndex];
+        dynamicCameraControls(target, target.speed || 2); // Use target's speed, default to 2
+        if (cameraAtTarget(target)) {
+            currentTargetIndex++;
+        }
+    }
     renderer.render(scene, camera);
-};
-
+}
 // Start the animation loop
 animate();
