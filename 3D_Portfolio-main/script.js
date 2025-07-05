@@ -11,7 +11,7 @@ const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 camera.position.z = 200;
 camera.position.y = 0;
-camera.position.x = 0;
+camera.position.x = 50;
 
 // The webGL renderer
 const renderer = new THREE.WebGLRenderer();
@@ -102,46 +102,91 @@ function dynamicCameraControls(target, speed = 1) {
 
 function TextLocation(moveX, moveY, moveZ, textMesh) {
     if (moveX == true) {
-        textMesh.position.x += 0.5;
+        textMesh.position.x = moveX;
     }
     if (moveY == true) {
-        textMesh.position.y += 0.5;
+        textMesh.position.y = moveY;
     }
     if (moveZ == true) {
-        textMesh.position.z += 0.5; 
+        textMesh.position.z = moveZ; 
     }
 }
 
 
-const boldText = new THREE.FontLoader();
 
-// Load the default font
-    boldText.load('https://cdn.jsdelivr.net/npm/three/examples/fonts/helvetiker_regular.typeface.json', function (font) {
-    const textGeometry = new THREE.TextGeometry('Welcome!', {
+// --- TEXT SETUP RESTARTED ---
+// Load font and create a visible text mesh
+
+
+// Welcome Text
+const fontLoader = new THREE.FontLoader();
+
+// Utility function to create text meshes
+function createTextMesh(text, font, options = {}) {
+    const geometry = new THREE.TextGeometry(text, {
         font: font,
-        size: 12,
-        height: 5,
-        curveSegments: 12,
-        bevelEnabled: true,
-        bevelThickness: 1,
-        bevelSize: 0.5,
-        bevelSegments: 3
+        size: options.size || 12,
+        height: options.height || 5,
+        curveSegments: options.curveSegments || 12,
+        bevelEnabled: options.bevelEnabled !== undefined ? options.bevelEnabled : true,
+        bevelThickness: options.bevelThickness || 1,
+        bevelSize: options.bevelSize || 0.5,
+        bevelSegments: options.bevelSegments || 3
     });
+    const material = options.material || new THREE.MeshBasicMaterial({ color: options.color || 0xffff11 });
+    const mesh = new THREE.Mesh(geometry, material);
+    if (options.position) mesh.position.copy(options.position);
+    return mesh;
+}
 
-    // Text Material
-    const boldTextMaterial = new THREE.MeshBasicMaterial({ color: 0xffff11 });
+fontLoader.load('https://cdn.jsdelivr.net/npm/three/examples/fonts/helvetiker_regular.typeface.json', function (font) {
+    // Welcome Text
+    const welcomeTextMesh = createTextMesh('Welcome to my 3D Portfolio!', font, {
+        position: new THREE.Vector3(-60, 0, 0)
+    });
+    scene.add(welcomeTextMesh);
 
-    // Create Mesh - Need boldTextMaterial 
-    const boldTextMesh = new THREE.Mesh(textGeometry, boldTextMaterial);
+    // About Me Text
+    const aboutMeTextMesh = createTextMesh('This Is Me', font, {
+        position: new THREE.Vector3(-30, 0, -100),
+        color: 0xff0000 // red
+    });
+    scene.add(aboutMeTextMesh);
 
-    // Position Text
-    boldTextMesh.position.z = 0;
-    boldTextMesh.position.x = -38.5;
-    boldTextMesh.position.y = 0;
+    // And this is my world
+    const thisIsMyTextMesh = createTextMesh('and this is my...', font, {
+        position: new THREE.Vector3(-60, 0, 0)
+    });
+    scene.add(thisIsMyTextMesh);
 
-    // Add Text to Scene
-    scene.add(boldTextMesh);
+    // World 
+
+    const worldTextMesh = createTextMesh('World', font, {
+        position: new THREE.Vector3(-60, 0, 0), 
+        color: 0x0000ff // Blue
+    });
+    scene.add(worldTextMesh);
+
 });
+
+// Load Earth Texture
+const earthTexture = new THREE.TextureLoader().load('Images/earth-Texture.jpg');
+
+// Create Earth Material
+const earthMaterial = new THREE.MeshBasicMaterial({
+    map: earthTexture
+});
+
+// Create Earth Sphere Geometry (radius: 5, segments: 64)
+const earthGeometry = new THREE.SphereGeometry(55, 64, 64);
+
+// Create Earth Mesh
+const earth = new THREE.Mesh(earthGeometry, earthMaterial);
+scene.add(earth);
+
+
+
+
 
 // Star Particles
 // Particle Materials - For Two Diffrent Colors of Stars 
@@ -192,7 +237,7 @@ scene.add(particleTwoSystem);
 
 
 const cameraTargets = [
-    {x: 0, y: 0, z: 100, speed: 2},
+    {x: 50, y: 0, z: -100, speed: 1},
 ];
 let currentTargetIndex = 0;
 
@@ -205,6 +250,7 @@ function cameraAtTarget(target, threshold = 0.1) {
 }
 
 function animate() {
+    earth.rotation.y += 0.005;
     requestAnimationFrame(animate);
     if (currentTargetIndex < cameraTargets.length) {
         const target = cameraTargets[currentTargetIndex];
