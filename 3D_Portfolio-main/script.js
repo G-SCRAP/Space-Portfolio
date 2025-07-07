@@ -9,7 +9,7 @@ const scene = new THREE.Scene();
 
 // Creates the Camera 
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-camera.position.z = 200;
+camera.position.z = 250;
 camera.position.y = 0;
 camera.position.x = 50;
 
@@ -18,45 +18,45 @@ const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.getElementById('scene-container').appendChild(renderer.domElement);
 
-// function createRocketShip() {
 
-//     // RocketShip Model - Kinda Looks like trash not gonna lie
-// // Create a cone geometry for the rocket body
-// const bodyGeometry = new THREE.ConeGeometry(0.5, 1, 32);
-// const bodyMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
-// const bodyMesh = new THREE.Mesh(bodyGeometry, bodyMaterial);
-// bodyMesh.position.set(0, -0.75, 0);
-// bodyMesh.position.y = 1.25;
-// scene.add(bodyMesh);
 
-// // Create a cylinder geometry for the engine
-// const engineGeometry = new THREE.CylinderGeometry(0.5, 0.5, 3, 32);
-// const engineMaterial = new THREE.MeshBasicMaterial({ color: 0x0000ff });
-// const engineMesh = new THREE.Mesh(engineGeometry, engineMaterial);
-// engineMesh.position.set(0, -0.75, 0);
-// scene.add(engineMesh);
+    // RocketShip Model - Kinda Looks like trash not gonna lie
+// Create a cone geometry for the rocket body
+const bodyGeometry = new THREE.ConeGeometry(0.5, 1, 32);
+const bodyMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+const bodyMesh = new THREE.Mesh(bodyGeometry, bodyMaterial);
+bodyMesh.position.set(0, -0.75, 0);
+bodyMesh.position.y = 1.25;
+scene.add(bodyMesh);
 
-// // Custom Polygon Shape for Wings of Rocketship
-// var wingOnePoints = [];
-// wingOnePoints.push(new THREE.Vector2(0, 1));
-// wingOnePoints.push(new THREE.Vector2(-1, 0));
-// wingOnePoints.push(new THREE.Vector2(0, 0));
+// Create a cylinder geometry for the engine
+const engineGeometry = new THREE.CylinderGeometry(0.5, 0.5, 3, 32);
+const engineMaterial = new THREE.MeshBasicMaterial({ color: 0x0000ff });
+const engineMesh = new THREE.Mesh(engineGeometry, engineMaterial);
+engineMesh.position.set(0, -0.75, 0);
+scene.add(engineMesh);
 
-// // Create a shape from the points
-// var wingOneShape = new THREE.Shape(wingOnePoints);
-// // Create geometry from the shape
-// var wingOneGeometry = new THREE.ShapeGeometry(wingOneShape);
-// // Create material
-// var wingOneMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
-// // Create mesh
-// var wingOnePolygon = new THREE.Mesh(wingOneGeometry, wingOneMaterial);
+// Custom Polygon Shape for Wings of Rocketship
+var wingOnePoints = [];
+wingOnePoints.push(new THREE.Vector2(0, 1));
+wingOnePoints.push(new THREE.Vector2(-1, 0));
+wingOnePoints.push(new THREE.Vector2(0, 0));
 
-// wingOnePolygon.position.x = -0.3
-// wingOnePolygon.position.y = -2.4
-// wingOnePolygon.position.z = 0
+// Create a shape from the points
+var wingOneShape = new THREE.Shape(wingOnePoints);
+// Create geometry from the shape
+var wingOneGeometry = new THREE.ShapeGeometry(wingOneShape);
+// Create material
+var wingOneMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
+// Create mesh
+var wingOnePolygon = new THREE.Mesh(wingOneGeometry, wingOneMaterial);
 
-// // Add Polygon to scene
-// scene.add(wingOnePolygon)
+wingOnePolygon.position.x = -0.3
+wingOnePolygon.position.y = -2.4
+wingOnePolygon.position.z = 0
+
+// Add Polygon to scene
+scene.add(wingOnePolygon)
 
 
 var wingTwoPoints = [];
@@ -141,47 +141,53 @@ function createTextMesh(text, font, options = {}) {
 
 fontLoader.load('https://cdn.jsdelivr.net/npm/three/examples/fonts/helvetiker_regular.typeface.json', function (font) {
     // Welcome Text
-    const welcomeTextMesh = createTextMesh('Welcome to my 3D Portfolio!', font, {
-        position: new THREE.Vector3(-60, 0, 0)
+    const welcomeTextMesh = createTextMesh('Welcome to the launch!', font, {
+        position: new THREE.Vector3(-185, 150, 0),
+        size : 30
     });
     scene.add(welcomeTextMesh);
 
     // About Me Text
-    const aboutMeTextMesh = createTextMesh('This Is Me', font, {
-        position: new THREE.Vector3(-30, 0, -100),
+    const aboutMeTextMesh = createTextMesh('GAVIN OGREN', font, {
+        position: new THREE.Vector3(-2, -5, -50),
         color: 0xff0000 // red
     });
     scene.add(aboutMeTextMesh);
+    
 
     // And this is my world
-    const thisIsMyTextMesh = createTextMesh('and this is my...', font, {
-        position: new THREE.Vector3(-60, 0, 0)
+    const softwareTextMesh = createTextMesh('Software Developer', font, {
+        position: new THREE.Vector3(-20, -5, -250)
     });
-    scene.add(thisIsMyTextMesh);
+    scene.add(softwareTextMesh);
 
     // World 
 
-    const worldTextMesh = createTextMesh('World', font, {
-        position: new THREE.Vector3(-60, 0, 0), 
+    const itspecialistTextMesh = createTextMesh('IT specialist', font, {
+        position: new THREE.Vector3(0, -5, -450), 
         color: 0x0000ff // Blue
     });
-    scene.add(worldTextMesh);
+    scene.add(itspecialistTextMesh);
+
+    const creativetechnologistTextMesh = createTextMesh('Creative Technologist', font, {
+        position: new THREE.Vector3(-35, -5, -700), 
+        color: 0x0000ff // Blue
+    });
+    scene.add(creativetechnologistTextMesh);
+
 
 });
 
 // Load Earth Texture
 const earthTexture = new THREE.TextureLoader().load('Images/earth-Texture.jpg');
-
-// Create Earth Material
 const earthMaterial = new THREE.MeshBasicMaterial({
     map: earthTexture
 });
 
-// Create Earth Sphere Geometry (radius: 5, segments: 64)
-const earthGeometry = new THREE.SphereGeometry(55, 64, 64);
+const earthGeometry = new THREE.SphereGeometry(160, 64, 64); //Update first parameter to change its raduis 
 
-// Create Earth Mesh
 const earth = new THREE.Mesh(earthGeometry, earthMaterial);
+earth.position.set(40, -50, 0); // Position the Earth in the scene
 scene.add(earth);
 
 
@@ -237,7 +243,13 @@ scene.add(particleTwoSystem);
 
 
 const cameraTargets = [
-    {x: 50, y: 0, z: -100, speed: 1},
+    // {x: 50, y: 0, z: 400, speed: 0.5},
+    // {x: 50, y: 0, z: 401, speed: 0.005},
+    {x: 50, y: 0, z: -150, speed: 2.5},
+    {x: 50, y: 0, z: -200, speed: 3},  
+    {x: 50, y: 0, z: -250, speed: 3.5}, 
+    {x: 50, y: 0, z: -550, speed: 4}, 
+    // {x: 50, y: 400, z: -500, speed: 3}
 ];
 let currentTargetIndex = 0;
 
@@ -250,7 +262,7 @@ function cameraAtTarget(target, threshold = 0.1) {
 }
 
 function animate() {
-    earth.rotation.y += 0.005;
+    earth.rotation.y += 0.0025;
     requestAnimationFrame(animate);
     if (currentTargetIndex < cameraTargets.length) {
         const target = cameraTargets[currentTargetIndex];
