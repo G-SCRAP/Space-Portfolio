@@ -2,6 +2,7 @@
 // Date: 2025 - 6 - 9 
 // Description: A 3D portfolio website showcase who I am and my skills using Three.js
 
+
 console.log("3D Portfolio Website Loaded Successfully!");
 
 //Initialize Three.js scene
@@ -13,75 +14,14 @@ camera.position.z = 250;
 camera.position.y = 0;
 camera.position.x = 50;
 
+
+
 // The webGL renderer
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.getElementById('scene-container').appendChild(renderer.domElement);
 
 
-
-    // RocketShip Model - Kinda Looks like trash not gonna lie
-// Create a cone geometry for the rocket body
-const bodyGeometry = new THREE.ConeGeometry(0.5, 1, 32);
-const bodyMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
-const bodyMesh = new THREE.Mesh(bodyGeometry, bodyMaterial);
-bodyMesh.position.set(0, -0.75, 0);
-bodyMesh.position.y = 1.25;
-scene.add(bodyMesh);
-
-// Create a cylinder geometry for the engine
-const engineGeometry = new THREE.CylinderGeometry(0.5, 0.5, 3, 32);
-const engineMaterial = new THREE.MeshBasicMaterial({ color: 0x0000ff });
-const engineMesh = new THREE.Mesh(engineGeometry, engineMaterial);
-engineMesh.position.set(0, -0.75, 0);
-scene.add(engineMesh);
-
-// Custom Polygon Shape for Wings of Rocketship
-var wingOnePoints = [];
-wingOnePoints.push(new THREE.Vector2(0, 1));
-wingOnePoints.push(new THREE.Vector2(-1, 0));
-wingOnePoints.push(new THREE.Vector2(0, 0));
-
-// Create a shape from the points
-var wingOneShape = new THREE.Shape(wingOnePoints);
-// Create geometry from the shape
-var wingOneGeometry = new THREE.ShapeGeometry(wingOneShape);
-// Create material
-var wingOneMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
-// Create mesh
-var wingOnePolygon = new THREE.Mesh(wingOneGeometry, wingOneMaterial);
-
-wingOnePolygon.position.x = -0.3
-wingOnePolygon.position.y = -2.4
-wingOnePolygon.position.z = 0
-
-// Add Polygon to scene
-scene.add(wingOnePolygon)
-
-
-var wingTwoPoints = [];
-wingTwoPoints.push(new THREE.Vector2(0, 1));
-wingTwoPoints.push(new THREE.Vector2(1, 0));
-wingTwoPoints.push(new THREE.Vector2(0, 0));
-
-// Create a shape from the points
-var wingTwoShape = new THREE.Shape(wingTwoPoints);
-// Create geometry from the shape
-var wingTwoGeometry = new THREE.ShapeGeometry(wingTwoShape);
-// Create material
-var wingTwoMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
-// Create mesh
-var wingTwoPolygon = new THREE.Mesh(wingTwoGeometry, wingTwoMaterial);
-
-// Add Polygon to scene
-wingTwoPolygon.position.x = 0.3
-wingTwoPolygon.position.y = -2.4
-wingTwoPolygon.position.z = 0.0
-
-scene.add(wingTwoPolygon)
-
-// }
-// Camera Controls
 
 
 // Function controls camera position dynamically - Parameters needed are boolean values and a speed interger value
@@ -99,20 +39,6 @@ function dynamicCameraControls(target, speed = 1) {
         camera.position.z += Math.sign(target.z - camera.position.z) * Math.min(speed, Math.abs(target.z - camera.position.z));
     }
 }
-
-function TextLocation(moveX, moveY, moveZ, textMesh) {
-    if (moveX == true) {
-        textMesh.position.x = moveX;
-    }
-    if (moveY == true) {
-        textMesh.position.y = moveY;
-    }
-    if (moveZ == true) {
-        textMesh.position.z = moveZ; 
-    }
-}
-
-
 
 // --- TEXT SETUP RESTARTED ---
 // Load font and create a visible text mesh
@@ -243,13 +169,12 @@ scene.add(particleTwoSystem);
 
 
 const cameraTargets = [
-    // {x: 50, y: 0, z: 400, speed: 0.5},
-    // {x: 50, y: 0, z: 401, speed: 0.005},
+    {x: 50, y: 0, z: 400, speed: 0.5},
+    {x: 50, y: 0, z: 401, speed: 0.005},
     {x: 50, y: 0, z: -150, speed: 2.5},
     {x: 50, y: 0, z: -200, speed: 3},  
     {x: 50, y: 0, z: -250, speed: 3.5}, 
-    {x: 50, y: 0, z: -550, speed: 4}, 
-    // {x: 50, y: 400, z: -500, speed: 3}
+    {x: 50, y: 0, z: -550, speed: 4}
 ];
 let currentTargetIndex = 0;
 
