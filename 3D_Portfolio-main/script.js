@@ -2,10 +2,6 @@
 // Date: 2025 - 6 - 9 
 // Description: A 3D portfolio website showcase who I am and my skills using Three.js
 
-
-
-console.log("3D Portfolio Website Loaded Successfully!");
-
 //Initialize Three.js scene
 const scene = new THREE.Scene();
 
@@ -47,7 +43,7 @@ function dynamicCameraControls(target, speed = 1, rotSpeed = 0.02) {
     if (typeof target.z === "number" && Math.abs(camera.position.z - target.z) > 0.01) {
         camera.position.z += Math.sign(target.z - camera.position.z) * Math.min(speed, Math.abs(target.z - camera.position.z));
     }
-    // Smoothly rotate camera to target rotation (in radians)
+    // Rotate camera to target rotation
     if (target.rotX !== undefined) {
         camera.rotation.x += Math.sign(target.rotX - camera.rotation.x) * Math.min(rotSpeed, Math.abs(target.rotX - camera.rotation.x));
     }
@@ -73,7 +69,7 @@ function createTextMesh(text, font, options = {}) {
     const geometry = new THREE.TextGeometry(text, {
         font: font,
         size: options.size || 12,
-        height: options.height || 5,
+        height: options.height || 2,
         curveSegments: options.curveSegments || 12,
         bevelEnabled: options.bevelEnabled !== undefined ? options.bevelEnabled : true,
         bevelThickness: options.bevelThickness || 1,
@@ -87,6 +83,7 @@ function createTextMesh(text, font, options = {}) {
 }
 
 const fontLoader = new THREE.FontLoader();
+let myJourneyTextMesh; 
 fontLoader.load('https://cdn.jsdelivr.net/npm/three/examples/fonts/helvetiker_regular.typeface.json', function (font) {
     
     // Welcome Text
@@ -123,8 +120,56 @@ fontLoader.load('https://cdn.jsdelivr.net/npm/three/examples/fonts/helvetiker_re
     });
     scene.add(creativetechnologistTextMesh);
 
+    myJourneyTextMesh = createTextMesh('My Journey', font, {
+        position: new THREE.Vector3(650, 10, -480),
+        size: 10,
+        color: 0xff0000, // red
+        
+    });    
+    scene.add(myJourneyTextMesh);
+    myJourneyTextMesh.rotation.y = Math.PI / -2;
+
 
 });
+
+// Load the image texture
+const textureLoader = new THREE.TextureLoader();
+const mtaTexture = textureLoader.load('Images/mta.png');
+const awsTexture = textureLoader.load('Images/aws.png');
+const htmlandcssTexture = textureLoader.load('Images/htmlandcss.png');
+const pythonTexture = textureLoader.load('Images/python.png');
+
+// Create material using the texture
+const mtaMaterial = new THREE.MeshBasicMaterial({ map: mtaTexture, side: THREE.DoubleSide });
+const awsMaterial = new THREE.MeshBasicMaterial({ map: awsTexture, side: THREE.DoubleSide });
+const htmlandcssMaterial = new THREE.MeshBasicMaterial({ map: htmlandcssTexture, side: THREE.DoubleSide });
+const pythonMaterial = new THREE.MeshBasicMaterial({ map: pythonTexture, side: THREE.DoubleSide });
+
+// Create a plane geometry (adjust size to match image aspect ratio)
+const imageGeometry = new THREE.PlaneGeometry(50, 50); // Width, Height
+
+// Create mesh and add it to the scene
+const mtaMesh = new THREE.Mesh(imageGeometry, mtaMaterial);
+const awsMesh = new THREE.Mesh(imageGeometry, awsMaterial);
+const htmlandcssMesh = new THREE.Mesh(imageGeometry, htmlandcssMaterial);
+const pythonMesh = new THREE.Mesh(imageGeometry, pythonMaterial);
+
+
+mtaMesh.position.set(650, 0, -250,); // Position it where you want
+awsMesh.position.set(650, 0, -300,); // Position it where you want
+htmlandcssMesh.position.set(650, 0, -350,); // Position it where you want
+pythonMesh.position.set(650, 0, -400,); // Position it where you want
+
+scene.add(mtaMesh);
+scene.add(awsMesh);
+scene.add(htmlandcssMesh);      
+scene.add(pythonMesh);
+
+
+mtaMesh.rotation.y = Math.PI / -2; 
+awsMesh.rotation.y = Math.PI / -2;
+htmlandcssMesh.rotation.y = Math.PI / -2;
+pythonMesh.rotation.y = Math.PI / -2;
 
 // Load Earth Texture
 const earthTexture = new THREE.TextureLoader().load('Images/earth-Texture.jpg');
@@ -190,11 +235,11 @@ scene.add(particleTwoSystem);
 
 // Camera targets for dynamic camera movement
 const cameraTargets = [
-    {x: 50, y: 0, z: 400, speed: 10.5}, 
-    {x: 50, y: 0, z: 401, speed: 10.005},
-    {x: 50, y: 0, z: -150, speed: 12.5},
-    {x: 50, y: 0, z: -200, speed: 13},  
-    {x: 50, y: 0, z: -250, speed: 13.5}, 
+    {x: 50, y: 0, z: 400, speed: 0.5}, 
+    {x: 50, y: 0, z: 401, speed: 0.005},
+    {x: 50, y: 0, z: -150, speed: 2.5},
+    {x: 50, y: 0, z: -200, speed: 3},  
+    {x: 50, y: 0, z: -250, speed: 3.5}, 
     {x: 50, y: 0, z: -550, speed: 4},
     {x: 600, y: 0, z: -550, speed: 4, rotY: Math.PI / -2},
     {x: 600, y: 0, z: -100, speed: 1}
@@ -205,7 +250,6 @@ Rantest = false;
 
 
 function animate() {
-    earth.rotation.y += 0.0075;
     
     requestAnimationFrame(animate);
     if (currentTargetIndex < cameraTargets.length) {
@@ -218,8 +262,11 @@ function animate() {
 
     if (camera.position.z == -550 && camera.position.x == 600 || Rantest == true ) {
         Rantest = true; 
-        rocket.position.z += 1; 
+        rocket.rotation.y += 0.01;
+        rocket.position.z += 1.0; 
+        myJourneyTextMesh.position.z += 0.3;
     }
+    else{earth.rotation.y += 0.0075;}
 
   
     renderer.render(scene, camera);
