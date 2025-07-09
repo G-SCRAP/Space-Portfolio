@@ -3,6 +3,7 @@
 // Description: A 3D portfolio website showcase who I am and my skills using Three.js
 
 
+
 console.log("3D Portfolio Website Loaded Successfully!");
 
 //Initialize Three.js scene
@@ -14,40 +15,59 @@ camera.position.z = 250;
 camera.position.y = 0;
 camera.position.x = 50;
 
-
-
 // The webGL renderer
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.getElementById('scene-container').appendChild(renderer.domElement);
 
+// Light for the whole scene
+const ambientLight = new THREE.AmbientLight(0xffffff, 1.5);
+scene.add(ambientLight);
 
+const modelLoader = new THREE.GLTFLoader();
+modelLoader.load('models/rocket.glb', function (gltf) {
+  const rocket = gltf.scene;
+  rocket.scale.set(1, 1, 1);
+  rocket.position.set(650, 0, -565);
+  rocket.rotation.x = Math.PI / 2; // Rotate the rocket to face upwards
+  scene.add(rocket);
+  
+});
 
-
-// Function controls camera position dynamically - Parameters needed are boolean values and a speed interger value
-function dynamicCameraControls(target, speed = 1) {
-    // Move X
+// Function controls camera position and rotation dynamically
+function dynamicCameraControls(target, speed = 1, rotSpeed = 0.02) {
+    // Moving camera XYZ dynamically
     if (typeof target.x === "number" && Math.abs(camera.position.x - target.x) > 0.01) {
         camera.position.x += Math.sign(target.x - camera.position.x) * Math.min(speed, Math.abs(target.x - camera.position.x));
     }
-    // Move Y
     if (typeof target.y === "number" && Math.abs(camera.position.y - target.y) > 0.01) {
         camera.position.y += Math.sign(target.y - camera.position.y) * Math.min(speed, Math.abs(target.y - camera.position.y));
     }
-    // Move Z
     if (typeof target.z === "number" && Math.abs(camera.position.z - target.z) > 0.01) {
         camera.position.z += Math.sign(target.z - camera.position.z) * Math.min(speed, Math.abs(target.z - camera.position.z));
     }
+    // Smoothly rotate camera to target rotation (in radians)
+    if (target.rotX !== undefined) {
+        camera.rotation.x += Math.sign(target.rotX - camera.rotation.x) * Math.min(rotSpeed, Math.abs(target.rotX - camera.rotation.x));
+    }
+    if (target.rotY !== undefined) {
+        camera.rotation.y += Math.sign(target.rotY - camera.rotation.y) * Math.min(rotSpeed, Math.abs(target.rotY - camera.rotation.y));
+    }
+    if (target.rotZ !== undefined) {
+        camera.rotation.z += Math.sign(target.rotZ - camera.rotation.z) * Math.min(rotSpeed, Math.abs(target.rotZ - camera.rotation.z));
+    }
+}
+function cameraAtTarget(target, threshold = 0.1) {
+    return (
+        Math.abs(camera.position.x - target.x) < threshold &&
+        Math.abs(camera.position.y - target.y) < threshold &&
+        Math.abs(camera.position.z - target.z) < threshold
+    );
 }
 
-// --- TEXT SETUP RESTARTED ---
-// Load font and create a visible text mesh
 
-
-// Welcome Text
-const fontLoader = new THREE.FontLoader();
-
-// Utility function to create text meshes
+// Utility function to create text meshes - 
+// options pareemeter can include any of the paremeters
 function createTextMesh(text, font, options = {}) {
     const geometry = new THREE.TextGeometry(text, {
         font: font,
@@ -65,7 +85,9 @@ function createTextMesh(text, font, options = {}) {
     return mesh;
 }
 
+const fontLoader = new THREE.FontLoader();
 fontLoader.load('https://cdn.jsdelivr.net/npm/three/examples/fonts/helvetiker_regular.typeface.json', function (font) {
+    
     // Welcome Text
     const welcomeTextMesh = createTextMesh('Welcome to the launch!', font, {
         position: new THREE.Vector3(-185, 150, 0),
@@ -73,28 +95,27 @@ fontLoader.load('https://cdn.jsdelivr.net/npm/three/examples/fonts/helvetiker_re
     });
     scene.add(welcomeTextMesh);
 
-    // About Me Text
+    // Name
     const aboutMeTextMesh = createTextMesh('GAVIN OGREN', font, {
         position: new THREE.Vector3(-2, -5, -50),
         color: 0xff0000 // red
     });
     scene.add(aboutMeTextMesh);
-    
 
-    // And this is my world
+    // Software Developer
     const softwareTextMesh = createTextMesh('Software Developer', font, {
         position: new THREE.Vector3(-20, -5, -250)
     });
     scene.add(softwareTextMesh);
 
-    // World 
-
+    // It Specialist
     const itspecialistTextMesh = createTextMesh('IT specialist', font, {
         position: new THREE.Vector3(0, -5, -450), 
         color: 0x0000ff // Blue
     });
     scene.add(itspecialistTextMesh);
 
+    // Creative Technologist
     const creativetechnologistTextMesh = createTextMesh('Creative Technologist', font, {
         position: new THREE.Vector3(-35, -5, -700), 
         color: 0x0000ff // Blue
@@ -110,45 +131,43 @@ const earthMaterial = new THREE.MeshBasicMaterial({
     map: earthTexture
 });
 
+// Create Earth Geometry and Mesh
 const earthGeometry = new THREE.SphereGeometry(160, 64, 64); //Update first parameter to change its raduis 
-
 const earth = new THREE.Mesh(earthGeometry, earthMaterial);
 earth.position.set(40, -50, 0); // Position the Earth in the scene
 scene.add(earth);
 
-
-
-
-
 // Star Particles
-// Particle Materials - For Two Diffrent Colors of Stars 
+// Particle Materials - For Two Diffrent Colors of Stars. Note: Edit size to change its star size 
 var particleOneMaterial = new THREE.PointsMaterial({
     color: 0xffffff,
-    size: 0.1 // Adjust size as needed
+    size: 0.1 
 });
 
 var particleTwoMaterial = new THREE.PointsMaterial({
     color: 0xffff11,
-    size: 0.5 // Adjust size as needed
+    size: 0.5 
 });
 
 // Particle Count - Change this to adjust the fixed amount of stars in the scene
-var totalParticleCount = 5000; // Number of particles (stars)
+var totalParticleCount = 7500; // Number of particles (stars)
+var areaParticle = 2500; // Area in which particles are distributed
+
 particleOneAmount = totalParticleCount / 1.5
 particleTwoAmount = totalParticleCount / 3
 
 var positionsOne = new Float32Array(particleOneAmount * 3);
 for (var i = 0; i < positionsOne.length; i += 3) {
-    positionsOne[i] = (Math.random() - 0.5) * 2000; // Random X position
-    positionsOne[i + 1] = (Math.random() - 0.5) * 2000; // Random Y position
-    positionsOne[i + 2] = (Math.random() - 0.5) * 2000; // Random Z position
+    positionsOne[i] = (Math.random() - 0.5) * areaParticle; // Random X position
+    positionsOne[i + 1] = (Math.random() - 0.5) * areaParticle; // Random Y position
+    positionsOne[i + 2] = (Math.random() - 0.5) * areaParticle; // Random Z position
 }
 
 var positionsTwo = new Float32Array(particleTwoAmount * 3);
 for (var i = 0; i < positionsTwo.length; i += 3) {
-    positionsTwo[i] = (Math.random() - 0.5) * 2000; // Random X position
-    positionsTwo[i + 1] = (Math.random() - 0.5) * 2000; // Random Y position
-    positionsTwo[i + 2] = (Math.random() - 0.5) * 2000; // Random Z position
+    positionsTwo[i] = (Math.random() - 0.5) * areaParticle; // Random X position
+    positionsTwo[i + 1] = (Math.random() - 0.5) * areaParticle; // Random Y position
+    positionsTwo[i + 2] = (Math.random() - 0.5) * areaParticle; // Random Z position
 }
 
 // Create particle geometry
@@ -168,26 +187,21 @@ var particleTwoSystem = new THREE.Points(particleTwoGeometry, particleTwoMateria
 scene.add(particleTwoSystem);
 
 
+// Camera targets for dynamic camera movement
 const cameraTargets = [
-    {x: 50, y: 0, z: 400, speed: 0.5},
-    {x: 50, y: 0, z: 401, speed: 0.005},
-    {x: 50, y: 0, z: -150, speed: 2.5},
-    {x: 50, y: 0, z: -200, speed: 3},  
-    {x: 50, y: 0, z: -250, speed: 3.5}, 
-    {x: 50, y: 0, z: -550, speed: 4}
+    {x: 50, y: 0, z: 400, speed: 10.5}, 
+    {x: 50, y: 0, z: 401, speed: 10.005},
+    {x: 50, y: 0, z: -150, speed: 12.5},
+    {x: 50, y: 0, z: -200, speed: 13},  
+    {x: 50, y: 0, z: -250, speed: 13.5}, 
+    {x: 50, y: 0, z: -550, speed: 4},
+    {x: 600, y: 0, z: -550, speed: 4, rotY: Math.PI / -2},
 ];
 let currentTargetIndex = 0;
 
-function cameraAtTarget(target, threshold = 0.1) {
-    return (
-        Math.abs(camera.position.x - target.x) < threshold &&
-        Math.abs(camera.position.y - target.y) < threshold &&
-        Math.abs(camera.position.z - target.z) < threshold
-    );
-}
-
 function animate() {
-    earth.rotation.y += 0.0025;
+    earth.rotation.y += 0.0075;
+    
     requestAnimationFrame(animate);
     if (currentTargetIndex < cameraTargets.length) {
         const target = cameraTargets[currentTargetIndex];
