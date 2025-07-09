@@ -24,14 +24,15 @@ document.getElementById('scene-container').appendChild(renderer.domElement);
 const ambientLight = new THREE.AmbientLight(0xffffff, 1.5);
 scene.add(ambientLight);
 
+
+let rocket; // Make rocket accessible everywhere
 const modelLoader = new THREE.GLTFLoader();
 modelLoader.load('models/rocket.glb', function (gltf) {
-  const rocket = gltf.scene;
+  rocket = gltf.scene;
   rocket.scale.set(1, 1, 1);
   rocket.position.set(650, 0, -565);
   rocket.rotation.x = Math.PI / 2; // Rotate the rocket to face upwards
   scene.add(rocket);
-  
 });
 
 // Function controls camera position and rotation dynamically
@@ -196,8 +197,12 @@ const cameraTargets = [
     {x: 50, y: 0, z: -250, speed: 13.5}, 
     {x: 50, y: 0, z: -550, speed: 4},
     {x: 600, y: 0, z: -550, speed: 4, rotY: Math.PI / -2},
+    {x: 600, y: 0, z: -100, speed: 1}
+
 ];
 let currentTargetIndex = 0;
+Rantest = false; 
+
 
 function animate() {
     earth.rotation.y += 0.0075;
@@ -210,6 +215,13 @@ function animate() {
             currentTargetIndex++;
         }
     }
+
+    if (camera.position.z == -550 && camera.position.x == 600 || Rantest == true ) {
+        Rantest = true; 
+        rocket.position.z += 1; 
+    }
+
+  
     renderer.render(scene, camera);
 }
 // Start the animation loop
