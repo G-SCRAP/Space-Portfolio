@@ -20,7 +20,6 @@ document.getElementById('scene-container').appendChild(renderer.domElement);
 const ambientLight = new THREE.AmbientLight(0xffffff, 1.5);
 scene.add(ambientLight);
 
-
 let rocket; // Make rocket accessible everywhere
 const modelLoader = new THREE.GLTFLoader();
 modelLoader.load('models/rocket.glb', function (gltf) {
@@ -61,7 +60,6 @@ function cameraAtTarget(target, threshold = 0.1) {
         Math.abs(camera.position.z - target.z) < threshold
     );
 }
-
 
 // Utility function to create text meshes - 
 // options pareemeter can include any of the paremeters
@@ -138,12 +136,14 @@ const mtaTexture = textureLoader.load('Images/mta.png');
 const awsTexture = textureLoader.load('Images/aws.png');
 const htmlandcssTexture = textureLoader.load('Images/htmlandcss.png');
 const pythonTexture = textureLoader.load('Images/python.png');
+const comptiaTexture = textureLoader.load('Images/comptia.png'); // Assuming you have a texture for CompTIA
 
 // Create material using the texture
 const mtaMaterial = new THREE.MeshBasicMaterial({ map: mtaTexture, side: THREE.DoubleSide });
 const awsMaterial = new THREE.MeshBasicMaterial({ map: awsTexture, side: THREE.DoubleSide });
 const htmlandcssMaterial = new THREE.MeshBasicMaterial({ map: htmlandcssTexture, side: THREE.DoubleSide });
 const pythonMaterial = new THREE.MeshBasicMaterial({ map: pythonTexture, side: THREE.DoubleSide });
+const comptiaMaterial = new THREE.MeshBasicMaterial({ map: comptiaTexture, side: THREE.DoubleSide }); // Assuming you have a texture for CompTIA
 
 // Create a plane geometry (adjust size to match image aspect ratio)
 const imageGeometry = new THREE.PlaneGeometry(50, 50); // Width, Height
@@ -153,23 +153,27 @@ const mtaMesh = new THREE.Mesh(imageGeometry, mtaMaterial);
 const awsMesh = new THREE.Mesh(imageGeometry, awsMaterial);
 const htmlandcssMesh = new THREE.Mesh(imageGeometry, htmlandcssMaterial);
 const pythonMesh = new THREE.Mesh(imageGeometry, pythonMaterial);
+const comptiaMesh = new THREE.Mesh(imageGeometry, comptiaMaterial); 
 
 
 mtaMesh.position.set(650, 0, -250,); // Position it where you want
 awsMesh.position.set(650, 0, -300,); // Position it where you want
 htmlandcssMesh.position.set(650, 0, -350,); // Position it where you want
 pythonMesh.position.set(650, 0, -400,); // Position it where you want
+comptiaMesh.position.set(650, 0, -450); // Position it where you want
 
 scene.add(mtaMesh);
 scene.add(awsMesh);
 scene.add(htmlandcssMesh);      
 scene.add(pythonMesh);
+scene.add(comptiaMesh);
 
 
 mtaMesh.rotation.y = Math.PI / -2; 
 awsMesh.rotation.y = Math.PI / -2;
 htmlandcssMesh.rotation.y = Math.PI / -2;
 pythonMesh.rotation.y = Math.PI / -2;
+comptiaMesh.rotation.y = Math.PI / -2; 
 
 // Load Earth Texture
 const earthTexture = new THREE.TextureLoader().load('Images/earth-Texture.jpg');
@@ -235,19 +239,19 @@ scene.add(particleTwoSystem);
 
 // Camera targets for dynamic camera movement
 const cameraTargets = [
-    {x: 50, y: 0, z: 400, speed: 0.5}, 
-    {x: 50, y: 0, z: 401, speed: 0.005},
-    {x: 50, y: 0, z: -150, speed: 2.5},
-    {x: 50, y: 0, z: -200, speed: 3},  
-    {x: 50, y: 0, z: -250, speed: 3.5}, 
-    {x: 50, y: 0, z: -550, speed: 4},
+    {x: 50, y: 0, z: 400, speed: 10.5}, 
+    {x: 50, y: 0, z: 401, speed: 10.005},
+    {x: 50, y: 0, z: -150, speed: 12.5},
+    {x: 50, y: 0, z: -200, speed: 13},  
+    {x: 50, y: 0, z: -250, speed: 13.5}, 
+    {x: 50, y: 0, z: -550, speed: 14},
     {x: 600, y: 0, z: -550, speed: 4, rotY: Math.PI / -2},
-    {x: 600, y: 0, z: -100, speed: 1}
-
+    {x: 600, y: 0, z: -100, speed: 1}, 
+    {x: 650, y: 0, z: 300, speed: 1, rotY: Math.PI / -1},
 ];
 let currentTargetIndex = 0;
-Rantest = false; 
-
+let Rantest = false; 
+let Rantest2 = false; 
 
 function animate() {
     
@@ -264,9 +268,17 @@ function animate() {
         Rantest = true; 
         rocket.rotation.y += 0.01;
         rocket.position.z += 1.0; 
-        myJourneyTextMesh.position.z += 0.3;
+        myJourneyTextMesh.position.z += 1;
     }
     else{earth.rotation.y += 0.0075;}
+
+    if (camera.position.z == 300 && camera.position.x == 600 || Rantest2 == true) { 
+
+        rocket.position.z = 7; // Set the speed of the rocket
+        earth.hiden = true; // Hide the earth when the rocket is moving
+        myJourneyTextMesh.hiden = true; // Hide the text when the rocket is moving
+        
+    }
 
   
     renderer.render(scene, camera);
