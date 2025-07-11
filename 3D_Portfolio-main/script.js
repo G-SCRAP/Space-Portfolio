@@ -30,6 +30,22 @@ modelLoader.load('models/rocket.glb', function (gltf) {
   scene.add(rocket);
 });
 
+let mars; 
+const marsLoader = new THREE.GLTFLoader();
+marsLoader.load('models/Moon.glb',
+  function (gltf) {
+    mars = gltf.scene;
+    mars.scale.set(1, 1, 1);
+    mars.position.set(650, 0, -565);
+    scene.add(mars);
+    console.log("Mars Children:", mars.children);
+  },
+  undefined,
+  function (error) {
+    console.error('Error loading Mars model:', error);
+  }
+);
+
 // Function controls camera position and rotation dynamically
 function dynamicCameraControls(target, speed = 1, rotSpeed = 0.02) {
     // Moving camera XYZ dynamically
@@ -254,6 +270,7 @@ let Rantest = false;
 let Rantest2 = false; 
 
 function animate() {
+
     
     requestAnimationFrame(animate);
     if (currentTargetIndex < cameraTargets.length) {
@@ -275,8 +292,8 @@ function animate() {
     if (camera.position.z == 300 && camera.position.x == 600 || Rantest2 == true) { 
 
         rocket.position.z = 7; // Set the speed of the rocket
-        earth.hiden = true; // Hide the earth when the rocket is moving
-        myJourneyTextMesh.hiden = true; // Hide the text when the rocket is moving
+        earth.visible = false; // Hide the earth when the rocket is moving
+        myJourneyTextMesh.visible = false; // Hide the text when the rocket is moving
         
     }
 
