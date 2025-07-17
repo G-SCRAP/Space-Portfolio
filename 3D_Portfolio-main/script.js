@@ -20,6 +20,10 @@ document.getElementById('scene-container').appendChild(renderer.domElement);
 const ambientLight = new THREE.AmbientLight(0xffffff, 1.5);
 scene.add(ambientLight);
 
+const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+directionalLight.position.set(1, 1, 1).normalize();
+scene.add(directionalLight);
+
 let rocket; // Make rocket accessible everywhere
 const modelLoader = new THREE.GLTFLoader();
 modelLoader.load('models/rocket.glb', function (gltf) {
@@ -30,21 +34,16 @@ modelLoader.load('models/rocket.glb', function (gltf) {
   scene.add(rocket);
 });
 
-let mars; 
-const marsLoader = new THREE.GLTFLoader();
-marsLoader.load('models/Moon.glb',
-  function (gltf) {
-    mars = gltf.scene;
-    mars.scale.set(1, 1, 1);
-    mars.position.set(650, 0, -565);
-    scene.add(mars);
-    console.log("Mars Children:", mars.children);
-  },
-  undefined,
-  function (error) {
-    console.error('Error loading Mars model:', error);
-  }
-);
+let astronaut; 
+const astronautLoader = new THREE.GLTFLoader();
+astronautLoader.load('models/astronaut.glb', function (gltf) {
+    astronaut = gltf.scene;
+    astronaut.scale.set(1, 1, 1);
+    astronaut.position.set(650, 0, -565);
+
+    scene.add(astronaut);
+    console.log('Astronaut model loaded successfully');
+});
 
 // Function controls camera position and rotation dynamically
 function dynamicCameraControls(target, speed = 1, rotSpeed = 0.02) {
@@ -95,7 +94,6 @@ function createTextMesh(text, font, options = {}) {
     if (options.position) mesh.position.copy(options.position);
     return mesh;
 }
-
 const fontLoader = new THREE.FontLoader();
 let myJourneyTextMesh; 
 fontLoader.load('https://cdn.jsdelivr.net/npm/three/examples/fonts/helvetiker_regular.typeface.json', function (font) {
@@ -198,10 +196,24 @@ const earthMaterial = new THREE.MeshBasicMaterial({
 });
 
 // Create Earth Geometry and Mesh
-const earthGeometry = new THREE.SphereGeometry(160, 64, 64); //Update first parameter to change its raduis 
+ earthGeometry = new THREE.SphereGeometry(160, 64, 64); //Update first parameter to change its raduis 
 const earth = new THREE.Mesh(earthGeometry, earthMaterial);
 earth.position.set(40, -50, 0); // Position the Earth in the scene
 scene.add(earth);
+
+
+const moonTexture = new THREE.TextureLoader().load('Images/moon-Texture.png');
+const moonMaterial = new THREE.MeshBasicMaterial({
+    map: moonTexture
+});
+
+const moonGeomerty = new THREE.SphereGeometry(160, 64, 64); // Update first parameter to change its raduis
+const moon = new THREE.Mesh(moonGeomerty, moonMaterial); 
+moon.scale.set(0.5, 0.5, 0.5); // Scale down the moon
+moon.position.set(650, 0, 150); // Position the Moon in the scene
+
+//scene.add(moon); // Add the moon to the scene
+
 
 // Star Particles
 // Particle Materials - For Two Diffrent Colors of Stars. Note: Edit size to change its star size 
@@ -263,14 +275,13 @@ const cameraTargets = [
     {x: 50, y: 0, z: -550, speed: 14},
     {x: 600, y: 0, z: -550, speed: 4, rotY: Math.PI / -2},
     {x: 600, y: 0, z: -100, speed: 1}, 
-    {x: 650, y: 0, z: 300, speed: 1, rotY: Math.PI / -1},
+    {x: 650, y: 0, z: -100, speed: 1, rotY: Math.PI / -1},
 ];
 let currentTargetIndex = 0;
 let Rantest = false; 
 let Rantest2 = false; 
 
 function animate() {
-
     
     requestAnimationFrame(animate);
     if (currentTargetIndex < cameraTargets.length) {
@@ -280,24 +291,22 @@ function animate() {
             currentTargetIndex++;
         }
     }
-
     if (camera.position.z == -550 && camera.position.x == 600 || Rantest == true ) {
         Rantest = true; 
         rocket.rotation.y += 0.01;
         rocket.position.z += 1.0; 
         myJourneyTextMesh.position.z += 1;
+
+        earth.geometry.dispose();
     }
     else{earth.rotation.y += 0.0075;}
-
     if (camera.position.z == 300 && camera.position.x == 600 || Rantest2 == true) { 
 
         rocket.position.z = 7; // Set the speed of the rocket
         earth.visible = false; // Hide the earth when the rocket is moving
         myJourneyTextMesh.visible = false; // Hide the text when the rocket is moving
         
-    }
-
-  
+    }  
     renderer.render(scene, camera);
 }
 // Start the animation loop
