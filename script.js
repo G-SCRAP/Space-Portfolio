@@ -20,7 +20,7 @@ document.getElementById('scene-container').appendChild(renderer.domElement);
 const ambientLight = new THREE.AmbientLight(0xffffff, 1.5);
 scene.add(ambientLight);
 
-const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+const directionalLight = new THREE.DirectionalLight(0xffffff, 5);
 directionalLight.position.set(1, 1, 1).normalize();
 scene.add(directionalLight);
 
@@ -38,12 +38,30 @@ let astronaut;
 const astronautLoader = new THREE.GLTFLoader();
 astronautLoader.load('models/astronaut.glb', function (gltf) {
     astronaut = gltf.scene;
-    astronaut.scale.set(1, 1, 1);
-    astronaut.position.set(650, 0, -565);
+    astronaut.scale.set(15, 15, 15);
+    astronaut.position.set(650, 81.5, 120);
+
+    astronaut.rotation.y = Math.PI / 1; 
 
     scene.add(astronaut);
-    console.log('Astronaut model loaded successfully');
 });
+
+
+// SUPER BRIGHT LIGHT SETUP
+const keyLight = new THREE.DirectionalLight(0xffffff, 3);
+keyLight.position.set(100, 100, 100);
+scene.add(keyLight);
+
+const fillLight = new THREE.DirectionalLight(0xffffff, 2);
+fillLight.position.set(-100, 50, 100);
+scene.add(fillLight);
+
+const backLight = new THREE.DirectionalLight(0xffffff, 2);
+backLight.position.set(0, 100, -100);
+scene.add(backLight);
+
+const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444, 1.5);
+scene.add(hemiLight);
 
 // Function controls camera position and rotation dynamically
 function dynamicCameraControls(target, speed = 1, rotSpeed = 0.02) {
@@ -212,7 +230,7 @@ const moon = new THREE.Mesh(moonGeomerty, moonMaterial);
 moon.scale.set(0.5, 0.5, 0.5); // Scale down the moon
 moon.position.set(650, 0, 150); // Position the Moon in the scene
 
-//scene.add(moon); // Add the moon to the scene
+scene.add(moon); // Add the moon to the scene
 
 
 // Star Particles
@@ -273,9 +291,11 @@ const cameraTargets = [
     {x: 50, y: 0, z: -200, speed: 13},  
     {x: 50, y: 0, z: -250, speed: 13.5}, 
     {x: 50, y: 0, z: -550, speed: 14},
-    {x: 600, y: 0, z: -550, speed: 4, rotY: Math.PI / -2},
-    {x: 600, y: 0, z: -100, speed: 1}, 
+    {x: 600, y: 0, z: -550, speed: 40, rotY: Math.PI / -2},
+    {x: 600, y: 0, z: -100, speed: 50}, 
     {x: 650, y: 0, z: -100, speed: 1, rotY: Math.PI / -1},
+    {x: 650, y: 0, z: -99, speed: 0.01},
+    {x: 650, y: 70, z: 80, speed: 1, rotY: Math.PI / -1}, 
 ];
 let currentTargetIndex = 0;
 let Rantest = false; 
