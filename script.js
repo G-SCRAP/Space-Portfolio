@@ -166,7 +166,7 @@ fontLoader.load('https://cdn.jsdelivr.net/npm/three/examples/fonts/helvetiker_re
     scene.add(creativetechnologistTextMesh);
 
     myJourneyTextMesh = createTextMesh('My Journey', font, {
-        position: new THREE.Vector3(650, 10, -480),
+        position: new THREE.Vector3(650, 10, -580),
         size: 10,
         color: 0xff0000, // red
         
@@ -319,11 +319,12 @@ scene.add(particleTwoSystem);
 
 // Camera targets for dynamic camera movement
 const cameraTargets = [
-    {x: 50, y: 0, z: 400, speed: 0.5}, 
-    {x: 50, y: 0, z: 401, speed: 0.005},
-    {x: 50, y: 0, z: -150, speed: 2.5},
+    // {x: 50, y: 0, z: 400, speed: 0.5}, 
+    // {x: 50, y: 0, z: 401, speed: 0.005},
+    {x: 50, y: 0, z: -150, speed: 22.5}, // 2.5
     {x: 50, y: 0, z: -550, speed: 3.5},
     {x: 600, y: 0, z: -550, speed: 5, rotY: Math.PI / -2},
+    {x: 600, y: 0, z: -550, speed: 5},
     {x: 600, y: 0, z: -100, speed: 1}, 
     {x: 650, y: 0, z: -100, speed: 1, rotY: Math.PI / -1},
     {x: 650, y: 70, z: 80, speed: 1, rotY: Math.PI / -1}, 
@@ -339,6 +340,7 @@ let Rantest3 = false;
 let Rantest4 = false;
 
 function animate() {
+    console.log("Camera Position:", camera.position.x, camera.position.y, camera.position.z);
     
     requestAnimationFrame(animate);
     if (currentTargetIndex < cameraTargets.length) {
@@ -356,8 +358,11 @@ function animate() {
 
     if (camera.position.z == -550 && camera.position.x == 50 || Rantest == true) {
         Rantest = true; 
-        myJourneyTextMesh.visible = true; // show the text on the turn
+        // show the text on the turn
         rocket.visible = true; // Show the rocket when the camera reaches this position
+    }
+    if (camera.position.z == -549 && camera.position.x == 600){
+        myJourneyTextMesh.visible = true;
     }
     
     if (camera.position.z == -550 && camera.position.x == 600 || Rantest2 == true ) {        
