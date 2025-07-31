@@ -55,6 +55,16 @@ astronautLoader.load('models/astronaut.glb', function (gltf) {
 
     scene.add(astronaut);
 });
+
+let stargate; 
+const stargateLoader = new THREE.GLTFLoader();
+astronautLoader.load('models/stargate.glb', function (gltf) {
+    stargate = gltf.scene;
+    stargate.scale.set(0.5, 0.5, 0.5);
+    stargate.position.set(650, 5, 1000);
+    stargate.rotation.y = Math.PI / 1; // Rotate the stargate to face the camera
+    scene.add(stargate);
+});
 // SUPER BRIGHT LIGHT SETUP
 const keyLight = new THREE.DirectionalLight(0xffffff, 3);
 keyLight.position.set(100, 100, 100);
@@ -319,18 +329,21 @@ scene.add(particleTwoSystem);
 
 // Camera targets for dynamic camera movement
 const cameraTargets = [
-    // {x: 50, y: 0, z: 400, speed: 0.5}, 
-    // {x: 50, y: 0, z: 401, speed: 0.005},
+    {x: 50, y: 0, z: 400, speed: 10.5}, 
+    {x: 50, y: 0, z: 401, speed: 10.005},
     {x: 50, y: 0, z: -150, speed: 22.5}, // 2.5
-    {x: 50, y: 0, z: -550, speed: 3.5},
+    {x: 50, y: 0, z: -550, speed: 13.5},
     {x: 600, y: 0, z: -550, speed: 5, rotY: Math.PI / -2},
-    {x: 600, y: 0, z: -550, speed: 5},
+    {x: 600, y: 0, z: -549, speed: 10.05},
     {x: 600, y: 0, z: -100, speed: 1}, 
     {x: 650, y: 0, z: -100, speed: 1, rotY: Math.PI / -1},
     {x: 650, y: 70, z: 80, speed: 1, rotY: Math.PI / -1}, 
-    {x: 650, y: 72, z: 80, speed: 0.005},
-    {x: 650, y: 71, z: 160, speed: 2}
-    
+    {x: 650, y: 72, z: 80, speed: 0.005}, // One step text will appear here
+    {x: 650, y: 71, z: 160, speed: 5}, 
+    {x: 650, y: 0, z: 615, speed: 5}, 
+    {x: 650, y: 0, z: 1000, speed: 1},
+    {x: 0, y: 0, z: -1000, speed: 10000, rotY: Math.PI / -1},
+    {x: 0, y: 0, z: 100, speed: 1, rotY: Math.PI / -1},    
 ];
 let currentTargetIndex = 0;
 
@@ -340,7 +353,7 @@ let Rantest3 = false;
 let Rantest4 = false;
 
 function animate() {
-    console.log("Camera Position:", camera.position.x, camera.position.y, camera.position.z);
+    // console.log("Camera Position:", camera.position.x, camera.position.y, camera.position.z);
     
     requestAnimationFrame(animate);
     if (currentTargetIndex < cameraTargets.length) {
@@ -361,7 +374,8 @@ function animate() {
         // show the text on the turn
         rocket.visible = true; // Show the rocket when the camera reaches this position
     }
-    if (camera.position.z == -549 && camera.position.x == 600){
+    if (camera.position.z == -549.95 && camera.position.x == 600){
+        // My journey text will appear, I had troubles making it appeaer at 549 so i made it 549.95
         myJourneyTextMesh.visible = true;
     }
     
@@ -376,13 +390,17 @@ function animate() {
 
         // Rocket rotation 
         rocket.rotation.y += 0.01;
-        rocket.position.z += 1.0; 
+        rocket.position.z += 1; 
+
         // Free ram by removing the earth
         scene.remove(earth);                 
         earth.geometry.dispose();           
         earth.material.dispose(); 
 
         // Free ram by removing the text meshens not being used
+        scene.remove(aboutMeTextMesh)
+        aboutMeTextMesh.geometry.dispose();
+        aboutMeTextMesh.material.dispose();
         scene.remove(welcomeTextMesh);
         welcomeTextMesh.geometry.dispose();
         welcomeTextMesh.material.dispose();
@@ -398,7 +416,6 @@ function animate() {
     }
     if (camera.position.z == 300 && camera.position.x == 600 || Rantest3 == true) { 
         Rantest3 = true;
-        rocket.position.z = 7; // Set the speed of the rocket
     }  
 
     if (camera.position.z == 80 && camera.position.x == 650 || Rantest4 == true) {
@@ -406,12 +423,53 @@ function animate() {
         // For the moon text will move towards the moon
         oneStepTextMesh.visible = true;
         oneStepTextMesh.position.x += 2; // Move the text towards the moon
+
+        scene.remove(mtaMesh);
+        mtaMesh.geometry.dispose();
+        mtaMesh.material.dispose();
+        
+        scene.remove(awsMesh);
+        awsMesh.geometry.dispose();
+        awsMesh.material.dispose();
+
+        scene.remove(htmlandcssMesh);
+        htmlandcssMesh.geometry.dispose();
+        htmlandcssMesh.material.dispose();
+
+        scene.remove(pythonMesh);
+        pythonMesh.geometry.dispose();
+        pythonMesh.material.dispose();
+
+        scene.remove(comptiaMesh)
+        comptiaMesh.geometry.dispose();
+        comptiaMesh.material.dispose();
+
     }
+    if (camera.position.z == 1000 && camera.position.x == 650) {
+        rocket.position.x += 1; 
+        // Rocket will go down
+        rocket.position.y += 1; // Move the rocket down
+        rocket.rotation.x += 0.01; // Rotate the rocket slightly
+
+        rocket.position.set(0,10,-1000)
+        stargate.position.set(0, 0, -1000);
+
+        scene.remove(moon)
+        moon.geometry.dispose();
+        moon.material.dispose();
+
+        scene.remove(astronaut);
+        astronaut.geometry.dispose();
+        astronaut.material.dispose();
+    }
+
+
     // Animate astronaut's left arm for waving
     if (astronaut && astronaut.userData.leftArmBone) {
         const time = Date.now() * 0.003;
         // Set initial offset so arm is out, and reduce amplitude
         astronaut.userData.leftArmBone.rotation.z = -0.8 + Math.sin(time) * 0.3;
+
     }
     
     renderer.render(scene, camera);
