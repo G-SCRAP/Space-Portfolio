@@ -32,21 +32,29 @@ modelLoader.load('models/rocket.glb', function (gltf) {
   rocket.position.set(650, 0, -565);
   rocket.rotation.x = Math.PI / 2; // Rotate the rocket to face upwards
   scene.add(rocket);
+  rocket.visible = false; // Rocket is initially hidden
 });
 
 let astronaut; 
 const astronautLoader = new THREE.GLTFLoader();
 astronautLoader.load('models/astronaut.glb', function (gltf) {
     astronaut = gltf.scene;
-    astronaut.scale.set(15, 15, 15);
-    astronaut.position.set(650, 81.5, 120);
+    astronaut.scale.set(7, 7, 7);
+    astronaut.position.set(650, 75, 125);
 
     astronaut.rotation.y = Math.PI / 1; 
 
+    // Find the left upper arm bone
+    let leftArmBone = null;
+    astronaut.traverse(function(child) {
+        if (child.isBone && child.name === 'upper_armL_034') {
+            leftArmBone = child;
+        }
+    });
+    astronaut.userData.leftArmBone = leftArmBone;
+
     scene.add(astronaut);
 });
-
-
 // SUPER BRIGHT LIGHT SETUP
 const keyLight = new THREE.DirectionalLight(0xffffff, 3);
 keyLight.position.set(100, 100, 100);
@@ -114,37 +122,44 @@ function createTextMesh(text, font, options = {}) {
 }
 const fontLoader = new THREE.FontLoader();
 let myJourneyTextMesh; 
+let oneStepTextMesh; 
+let welcomeTextMesh;
+let aboutMeTextMesh;
+let softwareTextMesh;
+let itspecialistTextMesh;
+let creativetechnologistTextMesh;
+
 fontLoader.load('https://cdn.jsdelivr.net/npm/three/examples/fonts/helvetiker_regular.typeface.json', function (font) {
     
     // Welcome Text
-    const welcomeTextMesh = createTextMesh('Welcome to the launch!', font, {
+    welcomeTextMesh = createTextMesh('Welcome to the launch!', font, {
         position: new THREE.Vector3(-185, 150, 0),
         size : 30
     });
     scene.add(welcomeTextMesh);
 
     // Name
-    const aboutMeTextMesh = createTextMesh('GAVIN OGREN', font, {
+    aboutMeTextMesh = createTextMesh('GAVIN OGREN', font, {
         position: new THREE.Vector3(-2, -5, -50),
         color: 0xff0000 // red
     });
     scene.add(aboutMeTextMesh);
 
     // Software Developer
-    const softwareTextMesh = createTextMesh('Software Developer', font, {
+    softwareTextMesh = createTextMesh('Software Developer', font, {
         position: new THREE.Vector3(-20, -5, -250)
     });
     scene.add(softwareTextMesh);
 
     // It Specialist
-    const itspecialistTextMesh = createTextMesh('IT specialist', font, {
+    itspecialistTextMesh = createTextMesh('IT specialist', font, {
         position: new THREE.Vector3(0, -5, -450), 
         color: 0x0000ff // Blue
     });
     scene.add(itspecialistTextMesh);
 
     // Creative Technologist
-    const creativetechnologistTextMesh = createTextMesh('Creative Technologist', font, {
+    creativetechnologistTextMesh = createTextMesh('Creative Technologist', font, {
         position: new THREE.Vector3(-35, -5, -700), 
         color: 0x0000ff // Blue
     });
@@ -157,7 +172,18 @@ fontLoader.load('https://cdn.jsdelivr.net/npm/three/examples/fonts/helvetiker_re
         
     });    
     scene.add(myJourneyTextMesh);
+     myJourneyTextMesh.visible = false;
     myJourneyTextMesh.rotation.y = Math.PI / -2;
+
+    // One Step at a time
+    oneStepTextMesh = createTextMesh('One     Step     at     a     Time', font, {
+        position: new THREE.Vector3(450, 90, 150),
+        size: 20,
+        color: 0xff0000, // red
+    });
+    scene.add(oneStepTextMesh);
+    oneStepTextMesh.visible = false;
+    oneStepTextMesh.rotation.y = Math.PI / -1;
 
 
 });
@@ -188,11 +214,11 @@ const pythonMesh = new THREE.Mesh(imageGeometry, pythonMaterial);
 const comptiaMesh = new THREE.Mesh(imageGeometry, comptiaMaterial); 
 
 
-mtaMesh.position.set(650, 0, -250,); // Position it where you want
-awsMesh.position.set(650, 0, -300,); // Position it where you want
-htmlandcssMesh.position.set(650, 0, -350,); // Position it where you want
-pythonMesh.position.set(650, 0, -400,); // Position it where you want
-comptiaMesh.position.set(650, 0, -450); // Position it where you want
+mtaMesh.position.set(650, 0, -200,); // Position it where you want
+awsMesh.position.set(650, 0, -250,); // Position it where you want
+htmlandcssMesh.position.set(650, 0, -300,); // Position it where you want
+pythonMesh.position.set(650, 0, -350,); // Position it where you want
+comptiaMesh.position.set(650, 0, -400); // Position it where you want
 
 scene.add(mtaMesh);
 scene.add(awsMesh);
@@ -206,6 +232,14 @@ awsMesh.rotation.y = Math.PI / -2;
 htmlandcssMesh.rotation.y = Math.PI / -2;
 pythonMesh.rotation.y = Math.PI / -2;
 comptiaMesh.rotation.y = Math.PI / -2; 
+
+// Initially hide the meshes
+mtaMesh.visible = false; 
+awsMesh.visible = false;
+htmlandcssMesh.visible = false;
+pythonMesh.visible = false;
+comptiaMesh.visible = false;
+
 
 // Load Earth Texture
 const earthTexture = new THREE.TextureLoader().load('Images/earth-Texture.jpg');
@@ -285,21 +319,24 @@ scene.add(particleTwoSystem);
 
 // Camera targets for dynamic camera movement
 const cameraTargets = [
-    {x: 50, y: 0, z: 400, speed: 10.5}, 
-    {x: 50, y: 0, z: 401, speed: 10.005},
-    {x: 50, y: 0, z: -150, speed: 12.5},
-    {x: 50, y: 0, z: -200, speed: 13},  
-    {x: 50, y: 0, z: -250, speed: 13.5}, 
-    {x: 50, y: 0, z: -550, speed: 14},
-    {x: 600, y: 0, z: -550, speed: 40, rotY: Math.PI / -2},
-    {x: 600, y: 0, z: -100, speed: 50}, 
+    {x: 50, y: 0, z: 400, speed: 0.5}, 
+    {x: 50, y: 0, z: 401, speed: 0.005},
+    {x: 50, y: 0, z: -150, speed: 2.5},
+    {x: 50, y: 0, z: -550, speed: 3.5},
+    {x: 600, y: 0, z: -550, speed: 5, rotY: Math.PI / -2},
+    {x: 600, y: 0, z: -100, speed: 1}, 
     {x: 650, y: 0, z: -100, speed: 1, rotY: Math.PI / -1},
-    {x: 650, y: 0, z: -99, speed: 0.01},
     {x: 650, y: 70, z: 80, speed: 1, rotY: Math.PI / -1}, 
+    {x: 650, y: 72, z: 80, speed: 0.005},
+    {x: 650, y: 71, z: 160, speed: 2}
+    
 ];
 let currentTargetIndex = 0;
+
 let Rantest = false; 
 let Rantest2 = false; 
+let Rantest3 = false;
+let Rantest4 = false;
 
 function animate() {
     
@@ -311,23 +348,69 @@ function animate() {
             currentTargetIndex++;
         }
     }
-    if (camera.position.z == -550 && camera.position.x == 600 || Rantest == true ) {
+
+    // 
+    if (earth){
+        earth.rotation.y += 0.0075;
+    }
+
+    if (camera.position.z == -550 && camera.position.x == 50 || Rantest == true) {
         Rantest = true; 
+        myJourneyTextMesh.visible = true; // show the text on the turn
+        rocket.visible = true; // Show the rocket when the camera reaches this position
+    }
+    
+    if (camera.position.z == -550 && camera.position.x == 600 || Rantest2 == true ) {        
+        Rantest2 = true; 
+        // Certification images will appear
+        mtaMesh.visible = true; 
+        awsMesh.visible = true;
+        htmlandcssMesh.visible = true;
+        pythonMesh.visible = true;
+        comptiaMesh.visible = true;
+
+        // Rocket rotation 
         rocket.rotation.y += 0.01;
         rocket.position.z += 1.0; 
-        myJourneyTextMesh.position.z += 1;
+        // Free ram by removing the earth
+        scene.remove(earth);                 
+        earth.geometry.dispose();           
+        earth.material.dispose(); 
 
-        earth.geometry.dispose();
+        // Free ram by removing the text meshens not being used
+        scene.remove(welcomeTextMesh);
+        welcomeTextMesh.geometry.dispose();
+        welcomeTextMesh.material.dispose();
+        scene.remove(itspecialistTextMesh);
+        itspecialistTextMesh.geometry.dispose();
+        itspecialistTextMesh.material.dispose();
+        scene.remove(softwareTextMesh);
+        softwareTextMesh.geometry.dispose();
+        softwareTextMesh.material.dispose();
+        scene.remove(creativetechnologistTextMesh);
+        creativetechnologistTextMesh.geometry.dispose();
+        creativetechnologistTextMesh.material.dispose();
     }
-    else{earth.rotation.y += 0.0075;}
-    if (camera.position.z == 300 && camera.position.x == 600 || Rantest2 == true) { 
-
+    if (camera.position.z == 300 && camera.position.x == 600 || Rantest3 == true) { 
+        Rantest3 = true;
         rocket.position.z = 7; // Set the speed of the rocket
-        earth.visible = false; // Hide the earth when the rocket is moving
-        myJourneyTextMesh.visible = false; // Hide the text when the rocket is moving
-        
     }  
+
+    if (camera.position.z == 80 && camera.position.x == 650 || Rantest4 == true) {
+        Rantest4 = true;
+        // For the moon text will move towards the moon
+        oneStepTextMesh.visible = true;
+        oneStepTextMesh.position.x += 2; // Move the text towards the moon
+    }
+    // Animate astronaut's left arm for waving
+    if (astronaut && astronaut.userData.leftArmBone) {
+        const time = Date.now() * 0.003;
+        // Set initial offset so arm is out, and reduce amplitude
+        astronaut.userData.leftArmBone.rotation.z = -0.8 + Math.sin(time) * 0.3;
+    }
+    
     renderer.render(scene, camera);
+
 }
 // Start the animation loop
 animate();
