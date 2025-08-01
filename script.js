@@ -16,13 +16,9 @@ const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.getElementById('scene-container').appendChild(renderer.domElement);
 
-// Light for the whole scene
-const ambientLight = new THREE.AmbientLight(0xffffff, 1.5);
-scene.add(ambientLight);
 
-const directionalLight = new THREE.DirectionalLight(0xffffff, 5);
-directionalLight.position.set(1, 1, 1).normalize();
-scene.add(directionalLight);
+
+
 
 let rocket; // Make rocket accessible everywhere
 const modelLoader = new THREE.GLTFLoader();
@@ -46,6 +42,7 @@ astronautLoader.load('models/astronaut.glb', function (gltf) {
 
     // Find the left upper arm bone
     let leftArmBone = null;
+
     astronaut.traverse(function(child) {
         if (child.isBone && child.name === 'upper_armL_034') {
             leftArmBone = child;
@@ -55,7 +52,13 @@ astronautLoader.load('models/astronaut.glb', function (gltf) {
 
     scene.add(astronaut);
 });
-
+function astronautWave(){
+    // Animate astronaut's left arm for waving
+    if (astronaut && astronaut.userData.leftArmBone) {
+        const time = Date.now() * 0.003;
+        astronaut.userData.leftArmBone.rotation.z = -0.8 + Math.sin(time) * 0.3;
+    }
+}
 let stargate; 
 const stargateLoader = new THREE.GLTFLoader();
 astronautLoader.load('models/stargate.glb', function (gltf) {
@@ -194,9 +197,14 @@ fontLoader.load('https://cdn.jsdelivr.net/npm/three/examples/fonts/helvetiker_re
     scene.add(oneStepTextMesh);
     oneStepTextMesh.visible = false;
     oneStepTextMesh.rotation.y = Math.PI / -1;
-
-
 });
+
+function removeObjectsFromScene(objects) {
+    // Will remove objects from the scene and free up memory
+    scene.remove(objects)
+    objects.geometry.dispose();
+    objects.material.dispose();
+}
 
 // Load the image texture
 const textureLoader = new THREE.TextureLoader();
@@ -204,16 +212,21 @@ const mtaTexture = textureLoader.load('Images/mta.png');
 const awsTexture = textureLoader.load('Images/aws.png');
 const htmlandcssTexture = textureLoader.load('Images/htmlandcss.png');
 const pythonTexture = textureLoader.load('Images/python.png');
-const comptiaTexture = textureLoader.load('Images/comptia.png'); // Assuming you have a texture for CompTIA
+const comptiaTexture = textureLoader.load('Images/comptia.png'); 
+const mccTexture = textureLoader.load('Images/mcc.jpg'); 
+const primaveraTexture = textureLoader.load('Images/primavera.jpg');
+const evitTexture = textureLoader.load('Images/evit.jpg'); // Load the EVIT logo texture
 
 // Create material using the texture
 const mtaMaterial = new THREE.MeshBasicMaterial({ map: mtaTexture, side: THREE.DoubleSide });
 const awsMaterial = new THREE.MeshBasicMaterial({ map: awsTexture, side: THREE.DoubleSide });
 const htmlandcssMaterial = new THREE.MeshBasicMaterial({ map: htmlandcssTexture, side: THREE.DoubleSide });
 const pythonMaterial = new THREE.MeshBasicMaterial({ map: pythonTexture, side: THREE.DoubleSide });
-const comptiaMaterial = new THREE.MeshBasicMaterial({ map: comptiaTexture, side: THREE.DoubleSide }); // Assuming you have a texture for CompTIA
+const comptiaMaterial = new THREE.MeshBasicMaterial({ map: comptiaTexture, side: THREE.DoubleSide });
+const mccMaterial = new THREE.MeshBasicMaterial({ map: mccTexture, side: THREE.DoubleSide });
+const primaveraMaterial = new THREE.MeshBasicMaterial({ map: primaveraTexture, side: THREE.DoubleSide });
+const evitMaterial = new THREE.MeshBasicMaterial({ map: evitTexture, side: THREE.DoubleSide });
 
-// Create a plane geometry (adjust size to match image aspect ratio)
 const imageGeometry = new THREE.PlaneGeometry(50, 50); // Width, Height
 
 // Create mesh and add it to the scene
@@ -222,19 +235,28 @@ const awsMesh = new THREE.Mesh(imageGeometry, awsMaterial);
 const htmlandcssMesh = new THREE.Mesh(imageGeometry, htmlandcssMaterial);
 const pythonMesh = new THREE.Mesh(imageGeometry, pythonMaterial);
 const comptiaMesh = new THREE.Mesh(imageGeometry, comptiaMaterial); 
-
+const mccMesh = new THREE.Mesh(imageGeometry, mccMaterial);
+const primaveraMesh = new THREE.Mesh(imageGeometry, primaveraMaterial);
+const evitMesh = new THREE.Mesh(imageGeometry, evitMaterial); 
 
 mtaMesh.position.set(650, 0, -200,); // Position it where you want
-awsMesh.position.set(650, 0, -250,); // Position it where you want
-htmlandcssMesh.position.set(650, 0, -300,); // Position it where you want
-pythonMesh.position.set(650, 0, -350,); // Position it where you want
-comptiaMesh.position.set(650, 0, -400); // Position it where you want
+awsMesh.position.set(650, 0, -250,); 
+htmlandcssMesh.position.set(650, 0, -300,); 
+pythonMesh.position.set(650, 0, -350,); 
+comptiaMesh.position.set(650, 0, -400);
+
+mccMesh.position.set(0, 0, 0);
+primaveraMesh.position.set(0, 0, 0);
+evitMesh.position.set(0, 0, 0); 
 
 scene.add(mtaMesh);
 scene.add(awsMesh);
 scene.add(htmlandcssMesh);      
 scene.add(pythonMesh);
 scene.add(comptiaMesh);
+scene.add(mccMesh);
+scene.add(primaveraMesh);
+scene.add(evitMesh);
 
 
 mtaMesh.rotation.y = Math.PI / -2; 
@@ -249,7 +271,6 @@ awsMesh.visible = false;
 htmlandcssMesh.visible = false;
 pythonMesh.visible = false;
 comptiaMesh.visible = false;
-
 
 // Load Earth Texture
 const earthTexture = new THREE.TextureLoader().load('Images/earth-Texture.jpg');
@@ -329,21 +350,20 @@ scene.add(particleTwoSystem);
 
 // Camera targets for dynamic camera movement
 const cameraTargets = [
-    {x: 50, y: 0, z: 400, speed: 10.5}, 
-    {x: 50, y: 0, z: 401, speed: 10.005},
-    {x: 50, y: 0, z: -150, speed: 22.5}, // 2.5
-    {x: 50, y: 0, z: -550, speed: 13.5},
-    {x: 600, y: 0, z: -550, speed: 5, rotY: Math.PI / -2},
-    {x: 600, y: 0, z: -549, speed: 10.05},
-    {x: 600, y: 0, z: -100, speed: 1}, 
-    {x: 650, y: 0, z: -100, speed: 1, rotY: Math.PI / -1},
-    {x: 650, y: 70, z: 80, speed: 1, rotY: Math.PI / -1}, 
-    {x: 650, y: 72, z: 80, speed: 0.005}, // One step text will appear here
-    {x: 650, y: 71, z: 160, speed: 5}, 
-    {x: 650, y: 0, z: 615, speed: 5}, 
-    {x: 650, y: 0, z: 1000, speed: 1},
-    {x: 0, y: 0, z: -1000, speed: 10000, rotY: Math.PI / -1},
-    {x: 0, y: 0, z: 100, speed: 1, rotY: Math.PI / -1},    
+    {x: 50, y: 0, z: 400, speed: 10.5}, // Hovering aorund the earth
+    {x: 50, y: 0, z: 401, speed: 10.005},// waits about 5 seconds before moving to the next target
+    {x: 50, y: 0, z: -150, speed: 22.5}, // Moving pass earth 
+    {x: 50, y: 0, z: -550, speed: 13.5}, // Going past text meshs
+    {x: 600, y: 0, z: -550, speed: 5, rotY: Math.PI / -2}, // takes a turn to the right and moves towards the rocket
+    {x: 600, y: 0, z: -549, speed: 10.05}, // waits about 2 seconds before moving to the next target
+    {x: 600, y: 0, z: -100, speed: 1}, // Rocket Moves with the camera 
+    {x: 650, y: 70, z: 80, speed: 1, rotY: Math.PI / -1}, // Camera will move towards the moon and center astronaut
+    {x: 650, y: 72, z: 80, speed: 0.005}, // One step at a time text will appear here
+    {x: 650, y: 0, z: 550, speed: 5}, // Will match the rocket and go inside of it 
+    {x: 650, y: 0, z: 1000, speed: 1}, // Camera will move towards the stargate
+    {x: 0, y: 20, z: 995, speed: 10000, rotY: Math.PI / -1}, // Camera instantly to moves to new position after going though the stargate
+    {x: -40, y: 20, z: 600, speed: 1, rotY: Math.PI / -2}, 
+    {x: -40, y: 20, z: 100, speed: 1, rotY: Math.PI / -3},      
 ];
 let currentTargetIndex = 0;
 
@@ -351,10 +371,10 @@ let Rantest = false;
 let Rantest2 = false; 
 let Rantest3 = false;
 let Rantest4 = false;
-
+let Rantest5 = false; 
 function animate() {
     // console.log("Camera Position:", camera.position.x, camera.position.y, camera.position.z);
-    
+
     requestAnimationFrame(animate);
     if (currentTargetIndex < cameraTargets.length) {
         const target = cameraTargets[currentTargetIndex];
@@ -363,9 +383,8 @@ function animate() {
             currentTargetIndex++;
         }
     }
-
-    // 
     if (earth){
+        //If the earth is loaded, rotate it
         earth.rotation.y += 0.0075;
     }
 
@@ -392,88 +411,57 @@ function animate() {
         rocket.rotation.y += 0.01;
         rocket.position.z += 1; 
 
-        // Free ram by removing the earth
-        scene.remove(earth);                 
-        earth.geometry.dispose();           
-        earth.material.dispose(); 
-
         // Free ram by removing the text meshens not being used
-        scene.remove(aboutMeTextMesh)
-        aboutMeTextMesh.geometry.dispose();
-        aboutMeTextMesh.material.dispose();
-        scene.remove(welcomeTextMesh);
-        welcomeTextMesh.geometry.dispose();
-        welcomeTextMesh.material.dispose();
-        scene.remove(itspecialistTextMesh);
-        itspecialistTextMesh.geometry.dispose();
-        itspecialistTextMesh.material.dispose();
-        scene.remove(softwareTextMesh);
-        softwareTextMesh.geometry.dispose();
-        softwareTextMesh.material.dispose();
-        scene.remove(creativetechnologistTextMesh);
-        creativetechnologistTextMesh.geometry.dispose();
-        creativetechnologistTextMesh.material.dispose();
-    }
-    if (camera.position.z == 300 && camera.position.x == 600 || Rantest3 == true) { 
-        Rantest3 = true;
-    }  
-
-    if (camera.position.z == 80 && camera.position.x == 650 || Rantest4 == true) {
-        Rantest4 = true;
-        // For the moon text will move towards the moon
-        oneStepTextMesh.visible = true;
-        oneStepTextMesh.position.x += 2; // Move the text towards the moon
-
-        scene.remove(mtaMesh);
-        mtaMesh.geometry.dispose();
-        mtaMesh.material.dispose();
-        
-        scene.remove(awsMesh);
-        awsMesh.geometry.dispose();
-        awsMesh.material.dispose();
-
-        scene.remove(htmlandcssMesh);
-        htmlandcssMesh.geometry.dispose();
-        htmlandcssMesh.material.dispose();
-
-        scene.remove(pythonMesh);
-        pythonMesh.geometry.dispose();
-        pythonMesh.material.dispose();
-
-        scene.remove(comptiaMesh)
-        comptiaMesh.geometry.dispose();
-        comptiaMesh.material.dispose();
-
-    }
-    if (camera.position.z == 1000 && camera.position.x == 650) {
-        rocket.position.x += 1; 
-        // Rocket will go down
-        rocket.position.y += 1; // Move the rocket down
-        rocket.rotation.x += 0.01; // Rotate the rocket slightly
-
-        rocket.position.set(0,10,-1000)
-        stargate.position.set(0, 0, -1000);
-
-        scene.remove(moon)
-        moon.geometry.dispose();
-        moon.material.dispose();
-
-        scene.remove(astronaut);
-        astronaut.geometry.dispose();
-        astronaut.material.dispose();
-    }
-
-
-    // Animate astronaut's left arm for waving
-    if (astronaut && astronaut.userData.leftArmBone) {
-        const time = Date.now() * 0.003;
-        // Set initial offset so arm is out, and reduce amplitude
-        astronaut.userData.leftArmBone.rotation.z = -0.8 + Math.sin(time) * 0.3;
-
+        removeObjectsFromScene(earth); 
+        removeObjectsFromScene(aboutMeTextMesh); 
+        removeObjectsFromScene(welcomeTextMesh);
+        removeObjectsFromScene(itspecialistTextMesh);
+        removeObjectsFromScene(softwareTextMesh);
+        removeObjectsFromScene(creativetechnologistTextMesh);
+       
     }
     
-    renderer.render(scene, camera);
+    if (camera.position.z == 80 && camera.position.x == 650 || Rantest4 == true) {
+        Rantest4 = true;
+        Rantest3 = false;
+        astronautWave();
+        
+        // For the moon text that will move towards the moon behind athe stronaut
+        oneStepTextMesh.visible = true;
+        oneStepTextMesh.position.x += 2; 
 
+        // Removing UNUSED objects to free up memory
+        removeObjectsFromScene(mtaMesh);
+        removeObjectsFromScene(awsMesh);
+        removeObjectsFromScene(htmlandcssMesh);
+        removeObjectsFromScene(pythonMesh);
+        removeObjectsFromScene(comptiaMesh);    
+        
+
+    }
+    if (camera.position.z == 1000 && camera.position.x == 650 || Rantest5 == true) {
+        // This is code that will one once in Animate loop
+        if (Rantest5 == false) {
+            // Move the rocket to the stargate position
+            rocket.position.set(0, 0, 1000);
+            stargate.position.set(0, 0, 1000);
+            rocket.rotation.x = Math.PI / -2; // Rotate the rocket to face upwards
+
+        }
+        Rantest = false;
+        Rantest2 = false;
+        Rantest3 = false;
+        Rantest4 = false;
+
+        Rantest5 = true;
+
+        rocket.rotation.y += 0.01;
+        rocket.position.z -= 1
+        //Remove unused objects to free up memory
+        removeObjectsFromScene(moon);
+        scene.remove(astronaut);
+    }
+    renderer.render(scene, camera);
 }
 // Start the animation loop
 animate();
