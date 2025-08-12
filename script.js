@@ -16,10 +16,6 @@ const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.getElementById('scene-container').appendChild(renderer.domElement);
 
-
-
-
-
 let rocket; // Make rocket accessible everywhere
 const modelLoader = new THREE.GLTFLoader();
 modelLoader.load('models/rocket.glb', function (gltf) {
@@ -141,6 +137,7 @@ let aboutMeTextMesh;
 let softwareTextMesh;
 let itspecialistTextMesh;
 let creativetechnologistTextMesh;
+let educationTextMesh;
 
 fontLoader.load('https://cdn.jsdelivr.net/npm/three/examples/fonts/helvetiker_regular.typeface.json', function (font) {
     
@@ -185,7 +182,7 @@ fontLoader.load('https://cdn.jsdelivr.net/npm/three/examples/fonts/helvetiker_re
         
     });    
     scene.add(myJourneyTextMesh);
-     myJourneyTextMesh.visible = false;
+    myJourneyTextMesh.visible = false;
     myJourneyTextMesh.rotation.y = Math.PI / -2;
 
     // One Step at a time
@@ -197,6 +194,17 @@ fontLoader.load('https://cdn.jsdelivr.net/npm/three/examples/fonts/helvetiker_re
     scene.add(oneStepTextMesh);
     oneStepTextMesh.visible = false;
     oneStepTextMesh.rotation.y = Math.PI / -1;
+
+    educationTextMesh = createTextMesh('Education', font, {
+        position: new THREE.Vector3(0, 0, 700),
+        size: 20,
+        color: 0xff0000, 
+    });
+    educationTextMesh,rotation.y = Math.PI / -1; 
+    scene.add(educationTextMesh);
+
+
+
 });
 
 function removeObjectsFromScene(objects) {
@@ -246,8 +254,8 @@ pythonMesh.position.set(650, 0, -350,);
 comptiaMesh.position.set(650, 0, -400);
 
 mccMesh.position.set(0, 0, 0);
-primaveraMesh.position.set(0, 0, 0);
-evitMesh.position.set(0, 0, 0); 
+primaveraMesh.position.set(0, 0, 200);
+evitMesh.position.set(0, 0, 400); 
 
 scene.add(mtaMesh);
 scene.add(awsMesh);
@@ -362,7 +370,7 @@ const cameraTargets = [
     {x: 650, y: 0, z: 550, speed: 5}, // Will match the rocket and go inside of it 
     {x: 650, y: 0, z: 1000, speed: 1}, // Camera will move towards the stargate
     {x: 0, y: 20, z: 995, speed: 10000, rotY: Math.PI / -1}, // Camera instantly to moves to new position after going though the stargate
-    {x: -40, y: 20, z: 600, speed: 1, rotY: Math.PI / -2}, 
+    {x: -70, y: 20, z: 600, speed: 1, rotY: Math.PI / -2}, 
     {x: -40, y: 20, z: 100, speed: 1, rotY: Math.PI / -3},      
 ];
 let currentTargetIndex = 0;
