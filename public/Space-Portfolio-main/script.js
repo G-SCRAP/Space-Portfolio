@@ -57,7 +57,7 @@ function astronautWave(){
 }
 let stargate; 
 const stargateLoader = new THREE.GLTFLoader();
-astronautLoader.load('models/stargate.glb', function (gltf) {
+stargateLoader.load('models/stargate.glb', function (gltf) {
     stargate = gltf.scene;
     stargate.scale.set(0.5, 0.5, 0.5);
     stargate.position.set(650, 5, 1000);
@@ -200,19 +200,25 @@ fontLoader.load('https://cdn.jsdelivr.net/npm/three/examples/fonts/helvetiker_re
         size: 20,
         color: 0xff0000, 
     });
-    educationTextMesh,rotation.y = Math.PI / -1; 
+    educationTextMesh.rotation.y = Math.PI / -1; 
     scene.add(educationTextMesh);
 
 
 
 });
 
-function removeObjectsFromScene(objects) {
-    // Will remove objects from the scene and free up memory
-    scene.remove(objects)
-    objects.geometry.dispose();
-    objects.material.dispose();
+function removeObjectsFromScene(obj) {
+  scene.remove(obj);
+  if (obj.geometry) obj.geometry.dispose();
+  if (obj.material) obj.material.dispose();
+  if (obj.children) {
+    obj.children.forEach(child => {
+      if (child.geometry) child.geometry.dispose();
+      if (child.material) child.material.dispose();
+    });
+  }
 }
+
 
 // Load the image texture
 const textureLoader = new THREE.TextureLoader();
@@ -287,7 +293,7 @@ const earthMaterial = new THREE.MeshBasicMaterial({
 });
 
 // Create Earth Geometry and Mesh
- earthGeometry = new THREE.SphereGeometry(160, 64, 64); //Update first parameter to change its raduis 
+const earthGeometry = new THREE.SphereGeometry(160, 64, 64); //Update first parameter to change its raduis 
 const earth = new THREE.Mesh(earthGeometry, earthMaterial);
 earth.position.set(40, -50, 0); // Position the Earth in the scene
 scene.add(earth);
