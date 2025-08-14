@@ -1,0 +1,28 @@
+/*
+	Installed from https://reactbits.dev/default/
+*/
+/* Galaxy.css */
+html, body, #root {
+  height: 100%; 
+  margin: 0;
+  padding: 0;
+}
+
+.galaxy-container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  background-color: black;
+}
+.galaxy-container canvas {
+  pointer-events: none;
+}
+.text-overlay{
+ position: absolute; 
+  top: 50%;           
+  left: 50%;      
+  transform: translate(-50%, -50%); 
+  color: white;       
+  text-align: center; 
+  z-index: 10;        
+}
