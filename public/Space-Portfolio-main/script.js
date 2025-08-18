@@ -466,7 +466,6 @@ function animate() {
         Rantest2 = false;
         Rantest3 = false;
         Rantest4 = false;
-
         Rantest5 = true;
 
         rocket.rotation.y += 0.01;

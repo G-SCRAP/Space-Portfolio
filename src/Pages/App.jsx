@@ -1,24 +1,21 @@
 import ClickSpark from '../components/ClickSpark';
 import Galaxy from '../components/Backgrounds/Galaxy/Galaxy';
 import '../components/Backgrounds/Galaxy/Galaxy.css';
+import CardNav from '../components/Components/CardNav/CardNav'; 
+import mypfp from '../assets/Images/pfp.jpg'; 
 
-
+// here is the color pallete im am going to use https://colorhunt.co/palette/0000009929eacc66dafaeb92
 export default function App() {
   return (
-
+  
     <Galaxy mouseInteraction={false}>
-      <div style={{color: 'white'}}>
-        This is the text hopefully you can see me
-
-      </div>
-      <br />
+      <CardNav logo={mypfp}></CardNav>
+      <div className='text-box'>  
        <div className='text-overlay'>
-        This is the text hopefully you can see me
          <a href="../public/Space-Portfolio-main/index.html" style={{ fontSize: "1.5rem" }}>
           Go to Space Journey </a> 
-
       </div>
+     </div>
     </Galaxy>
-
-  );
+  ); 
 }
