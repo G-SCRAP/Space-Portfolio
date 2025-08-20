@@ -18,6 +18,7 @@ const CardNav = ({
   menuColor,
   buttonBgColor,
   buttonTextColor,
+  buttonHref = 'https://github.com/gav-ogren'
 }) => {
   const [isHamburgerOpen, setIsHamburgerOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
