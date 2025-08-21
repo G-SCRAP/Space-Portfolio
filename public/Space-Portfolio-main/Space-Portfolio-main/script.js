@@ -376,8 +376,8 @@ const cameraTargets = [
     {x: 650, y: 0, z: 550, speed: 5}, // Will match the rocket and go inside of it 
     {x: 650, y: 0, z: 1000, speed: 1}, // Camera will move towards the stargate
     {x: 0, y: 20, z: 995, speed: 10000, rotY: Math.PI / -1}, // Camera instantly to moves to new position after going though the stargate
-    {x: -70, y: 20, z: 600, speed: 1, rotY: Math.PI / -2}, 
-    {x: -40, y: 20, z: 100, speed: 1, rotY: Math.PI / -3},      
+    {x: -70, y: 20, z: 600, speed: 1, rotY: Math.PI / 2}, 
+   
 ];
 let currentTargetIndex = 0;
 
@@ -387,9 +387,10 @@ let Rantest3 = false;
 let Rantest4 = false;
 let Rantest5 = false; 
 function animate() {
-    // console.log("Camera Position:", camera.position.x, camera.position.y, camera.position.z);
+   console.log("Camera Position:", camera.position.x, camera.position.y, camera.position.z);
 
     requestAnimationFrame(animate);
+
     if (currentTargetIndex < cameraTargets.length) {
         const target = cameraTargets[currentTargetIndex];
         dynamicCameraControls(target, target.speed || 2); // Use target's speed, default to 2
@@ -466,7 +467,6 @@ function animate() {
         Rantest2 = false;
         Rantest3 = false;
         Rantest4 = false;
-
         Rantest5 = true;
 
         rocket.rotation.y += 0.01;

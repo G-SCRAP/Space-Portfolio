@@ -13,36 +13,32 @@ export default function App() {
 
   const items = [
     {
-      label: "Movie 1",
-      bgColor: "#ff0000ff",
-      textColor: '#fff', 
+      label: "LinkedIn",
+      bgColor: "#0056b8ff",
+      textColor: '#ffffffff', 
       links: [
-        {label: "Company", ariaLabel: "About Company", href:"../public/Space-Portfolio-main/index.html"},
-        {label: "Company", ariaLabel: "About Company", href:"../public/Space-Portfolio-main/index.html"},
+        {label: "Company", ariaLabel: "", href:"https://www.linkedin.com/in/gavin-ogren"},
       ]
     },
       {
-      label: "Movie 1",
-      bgColor: "#ff0000ff",
-      textColor: '#fff', 
+      label: "GitHub",
+      bgColor: "#000000ff",
+      textColor: '#fdfdfdff', 
       links: [
-        {label: "Company", ariaLabel: "About Company", href:"../public/Space-Portfolio-main/index.html"},
-        {label: "Company", ariaLabel: "About Company", href:"../public/Space-Portfolio-main/index.html"},
+        {label: "GitHub", ariaLabel: "", href:"../public/Space-Portfolio-main/index.html"},
       ]
     },
       {
-      label: "Movie 1",
-      bgColor: "#ff0000ff",
-      textColor: '#fff', 
+      label: "Simplified Portfolio",
+      bgColor: "#ffffffff",
+      textColor: '#000000ff', 
       links: [
-        {label: "Company", ariaLabel: "About Company", href:"../public/Space-Portfolio-main/index.html"},
-        {label: "Company", ariaLabel: "About Company", href:"../public/Space-Portfolio-main/index.html"},
+        {label: "Company", ariaLabel: "About Company", href:"../public/gavin-ogren-bio/index.html"},
       ]
     },
   ];
 
   return (
-  
     <Galaxy mouseInteraction={false}>
       <CardNav logo={logo} items={items} ease='power3.out' buttonHref='https://github.com/gav-ogren'></CardNav>
       <div className='text-box'>  

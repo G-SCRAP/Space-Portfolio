@@ -169,9 +169,10 @@ const CardNav = ({
           <button
             type="button"
             className="card-nav-cta-button"
+            onClick={() => window.location.href = buttonHref}
             style={{ backgroundColor: buttonBgColor, color: buttonTextColor }}
           >
-            Get Started
+            GitHub
           </button>
         </div>
 
